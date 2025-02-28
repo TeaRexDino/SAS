@@ -1,0 +1,2542 @@
+<craftcontent identifier="advanced-data-step-programming" title="Advanced DATA Step Programming in SAS" type="text/html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced DATA Step Programming in SAS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 40px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        h3 {
+            color: #3498db;
+            margin-top: 25px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            line-height: 1.4;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .comment {
+            color: green;
+        }
+        .keyword {
+            color: #0000ff;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .note {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .example-header {
+            font-weight: bold;
+            margin-top: 20px;
+            color: #555;
+        }
+        .toc {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #2980b9;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        @media print {
+            body {
+                font-size: 12pt;
+            }
+            pre {
+                white-space: pre-wrap;
+                page-break-inside: avoid;
+                background-color: #f8f8f8 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .toc {
+                page-break-after: always;
+            }
+            h2, h3 {
+                page-break-after: avoid;
+            }
+            .no-break {
+                page-break-inside: avoid;
+            }
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .print-only {
+            display: none;
+        }
+        @media print {
+            button {
+                display: none;
+            }
+            .print-only {
+                display: block;
+            }
+        }
+        .tip {
+            background-color: #f0f7fb;
+            border-left: 4px solid #5bc0de;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .variable {
+            color: #d63384;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.print();">Print / Export to PDF</button>
+
+    <h1>Advanced DATA Step Programming in SAS</h1>
+
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#introduction">Introduction to Advanced DATA Step Techniques</a></li>
+            <li><a href="#arrays">Arrays and Array Processing</a>
+                <ul>
+                    <li><a href="#array-basics">Array Basics</a></li>
+                    <li><a href="#multidimensional-arrays">Multidimensional Arrays</a></li>
+                    <li><a href="#array-of-arrays">Array of Arrays</a></li>
+                </ul>
+            </li>
+            <li><a href="#hash-objects">Hash Objects</a>
+                <ul>
+                    <li><a href="#hash-basics">Basic Hash Object Techniques</a></li>
+                    <li><a href="#hash-iterators">Hash Iterators</a></li>
+                    <li><a href="#hash-applications">Advanced Hash Applications</a></li>
+                </ul>
+            </li>
+            <li><a href="#by-group">By-Group Processing</a>
+                <ul>
+                    <li><a href="#bygroup-basics">By-Group Basics</a></li>
+                    <li><a href="#first-last-variables">FIRST. and LAST. Variables</a></li>
+                    <li><a href="#complex-bygroup">Complex By-Group Applications</a></li>
+                </ul>
+            </li>
+            <li><a href="#lookahead">Look-Ahead Processing</a>
+                <ul>
+                    <li><a href="#double-trailing-dot">Double Trailing @ Sign</a></li>
+                    <li><a href="#line-pointer">Line Pointer Controls</a></li>
+                </ul>
+            </li>
+            <li><a href="#complex-logic">Advanced Programming Logic</a>
+                <ul>
+                    <li><a href="#select-when">SELECT-WHEN Statements</a></li>
+                    <li><a href="#do-loop-variants">DO Loop Variants</a></li>
+                    <li><a href="#nested-loops">Nested Loops and Complex Conditions</a></li>
+                </ul>
+            </li>
+            <li><a href="#data-step-views">DATA Step Views</a></li>
+            <li><a href="#functions-routines">Advanced Functions and CALL Routines</a>
+                <ul>
+                    <li><a href="#hashing-functions">Hashing Functions</a></li>
+                    <li><a href="#array-functions">Array Functions</a></li>
+                    <li><a href="#custom-functions">Writing Custom Functions</a></li>
+                </ul>
+            </li>
+            <li><a href="#data-step-components">DATA Step Component Objects</a></li>
+            <li><a href="#efficiency">Efficiency and Performance Considerations</a></li>
+            <li><a href="#conclusion">Conclusion and Best Practices</a></li>
+        </ul>
+    </div>
+
+    <div id="introduction" class="section">
+        <h2>Introduction to Advanced DATA Step Techniques</h2>
+
+        <p>While basic DATA step operations are powerful, advanced DATA step programming techniques allow SAS programmers to tackle complex data manipulation tasks with greater efficiency and flexibility. This guide explores sophisticated techniques that go beyond the basics.</p>
+
+        <p>Advanced DATA step programming encompasses:</p>
+        <ul>
+            <li>Complex data structures like arrays and hash objects</li>
+            <li>Specialized processing techniques (by-group, look-ahead, etc.)</li>
+            <li>Advanced programming constructs for complex logic</li>
+            <li>Performance optimization techniques</li>
+            <li>Custom function development</li>
+        </ul>
+
+        <div class="note">
+            <p>This guide assumes you already understand the fundamentals of SAS DATA step programming, including basic data manipulation, conditional processing, and looping constructs.</p>
+        </div>
+    </div>
+
+    <div id="arrays" class="section">
+        <h2>Arrays and Array Processing</h2>
+
+        <p>Arrays in SAS allow you to reference multiple variables with a single name and an index. They're powerful for processing groups of variables with similar characteristics or implementing complex algorithms.</p>
+
+        <div id="array-basics" class="no-break">
+            <h3>Array Basics</h3>
+
+            <div class="example-header">Example 1: Creating and using a simple array</div>
+            <pre>
+<span class="comment">/ Create a dataset with multiple test scores /</span>
+<span class="keyword">DATA</span> student_scores;
+    <span class="keyword">INPUT</span> student_id $ test1-test5;
+    <span class="keyword">DATALINES</span>;
+S001 92 88 95 76 84
+S002 67 74 83 81 77
+S003 45 89 63 91 58
+S004 78 85 90 88 92
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/ Using arrays to calculate average score and identify lowest/highest scores /</span>
+<span class="keyword">DATA</span> score_analysis;
+    <span class="keyword">SET</span> student_scores;
+
+    <span class="comment">/ Define an array to reference test score variables /</span>
+    <span class="keyword">ARRAY</span> tests[5] test1-test5;
+
+    <span class="comment">/ Initialize variables for calculations /</span>
+    total_score = 0;
+    lowest_score = tests[1];
+    highest_score = tests[1];
+
+    <span class="comment">/ Process each test score using the array /</span>
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> 5;
+        totalscore = totalscore + tests[i];
+
+        <span class="keyword">IF</span> tests[i] < lowestscore <span class="keyword">THEN</span> lowestscore = tests[i];
+        <span class="keyword">IF</span> tests[i] > highestscore <span class="keyword">THEN</span> highestscore = tests[i];
+    <span class="keyword">END</span>;
+
+    <span class="comment">/ Calculate average score /</span>
+    averagescore = totalscore / 5;
+
+    <span class="comment">/ Drop the index variable created for the DO loop /</span>
+    <span class="keyword">DROP</span> i;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=score_analysis;
+<span class="keyword">RUN</span>;</pre>
+
+            <p>In this example:</p>
+            <ul>
+                <li>We create an array named "tests" that references five variables: test1, test2, test3, test4, and test5</li>
+                <li>The array allows us to process these variables in a loop, making the code more concise and maintainable</li>
+                <li>We use the array to calculate total, minimum, and maximum scores</li>
+                <li>The "i" variable is used as an index to reference array elements and is dropped after processing</li>
+            </ul>
+
+            <div class="example-header">Example 2: Using arrays for data transformation</div>
+            <pre>
+<span class="comment">/ Create a dataset with monthly sales data /</span>
+<span class="keyword">DATA</span> monthly_sales;
+    <span class="keyword">INPUT</span> store $ jan feb mar apr may jun jul aug sep oct nov dec;
+    <span class="keyword">DATALINES</span>;
+Store1 1020 1352 1543 1678 1822 2101 2341 2017 1856 1201 1567 2351
+Store2 1873 1622 1456 1502 1367 1297 1876 2134 2451 2011 1788 2541
+Store3 967 1087 1345 1424 1337 1258 1117 1089 1024 1145 1367 1989
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/ Transpose monthly data to quarterly data using arrays /</span>
+<span class="keyword">DATA</span> quarterly_sales;
+    <span class="keyword">SET</span> monthly_sales;
+
+    <span class="comment">/ Create an array for monthly data /</span>
+    <span class="keyword">ARRAY</span> months[12] jan feb mar apr may jun jul aug sep oct nov dec;
+
+    <span class="comment">/ Create an array for quarterly data /</span>
+    <span class="keyword">ARRAY</span> quarters[4] Q1 Q2 Q3 Q4;
+
+    <span class="comment">/ Calculate quarterly totals from monthly data /</span>
+    <span class="keyword">DO</span> q = 1 <span class="keyword">TO</span> 4;
+        quarters[q] = 0;
+        <span class="keyword">DO</span> m = ((q-1)3 + 1) <span class="keyword">TO</span> (q3);
+            quarters[q] = quarters[q] + months[m];
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+
+    <span class="comment">/ Calculate annual total /</span>
+    annual_total = <span class="keyword">SUM</span>(OF jan--dec);
+
+    <span class="comment">/ Calculate highest month's sales /</span>
+    highest_month = months[1];
+    highestmonthnum = 1;
+
+    <span class="keyword">DO</span> i = 2 <span class="keyword">TO</span> 12;
+        <span class="keyword">IF</span> months[i] > highest_month <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+            highest_month = months[i];
+            highestmonthnum = i;
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+
+    <span class="comment">/ Convert month number to name /</span>
+    <span class="keyword">ARRAY</span> monthnames[12] $ 8 TEMPORARY_ 
+        ('January', 'February', 'March', 'April', 'May', 'June', 
+         'July', 'August', 'September', 'October', 'November', 'December');
+
+    bestmonth = monthnames[highestmonthnum];
+
+    <span class="comment">/ Drop variables no longer needed /</span>
+    <span class="keyword">DROP</span> i q m highestmonthnum;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=quarterly_sales;
+<span class="keyword">RUN</span>;</pre>
+
+            <div class="tip">
+                <p><strong>Efficiency Tip:</strong> Use <code>TEMPORARY</code> arrays when you need lookup values that don't need to be stored in the final dataset. These arrays exist only in memory during processing and are more efficient.</p>
+            </div>
+        </div>
+
+        <div id="multidimensional-arrays" class="no-break">
+            <h3>Multidimensional Arrays</h3>
+
+            <div class="example-header">Example 3: Using two-dimensional arrays</div>
+            <pre>
+<span class="comment">/ Create a dataset with regional quarterly sales /</span>
+<span class="keyword">DATA</span> regional_sales;
+    <span class="keyword">INPUT</span> region $ Q12022 Q22022 Q32022 Q42022 Q12023 Q22023 Q32023 Q42023;
+    <span class="keyword">DATALINES</span>;
+North 152000 165000 142000 183000 158000 172000 148000 194000
+South 143000 171000 187000 164000 151000 183000 195000 171000
+East 138000 147000 152000 173000 142000 154000 160000 181000
+West 164000 178000 195000 213000 172000 188000 205000 227000
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/ Process data using a two-dimensional array /</span>
+<span class="keyword">DATA</span> region_analysis;
+    <span class="keyword">SET</span> regional_sales;
+
+    <span class="comment">/ Define a 2D array (2 years x 4 quarters) /</span>
+    <span class="keyword">ARRAY</span> sales[2,4] Q12022 Q22022 Q32022 Q42022 Q12023 Q22023 Q32023 Q42023;
+
+    <span class="comment">/ Create arrays for yearly totals and quarterly averages /</span>
+    <span class="keyword">ARRAY</span> yearly_totals[2];
+    <span class="keyword">ARRAY</span> quarterly_avgs[4];
+
+    <span class="comment">/ Calculate yearly totals /</span>
+    <span class="keyword">DO</span> y = 1 <span class="keyword">TO</span> 2;
+        yearly_totals[y] = 0;
+        <span class="keyword">DO</span> q = 1 <span class="keyword">TO</span> 4;
+            yearlytotals[y] = yearlytotals[y] + sales[y,q];
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+
+    <span class="comment">/ Calculate average sales by quarter across years /</span>
+    <span class="keyword">DO</span> q = 1 <span class="keyword">TO</span> 4;
+        quarterly_avgs[q] = <span class="keyword">MEAN</span>(sales[1,q], sales[2,q]);
+    <span class="keyword">END</span>;
+
+    <span class="comment">/ Calculate year-over-year growth /</span>
+    yoygrowth = ((yearlytotals[2] - yearlytotals[1]) / yearlytotals[1]) * 100;
+
+    <span class="comment">/ Rename variables for clarity /</span>
+    <span class="keyword">RENAME</span> yearlytotals1=total2022 yearlytotals2=total2023
+            quarterlyavgs1=avgQ1 quarterlyavgs2=avgQ2 
+            quarterlyavgs3=avgQ3 quarterlyavgs4=avgQ4;
+
+    <span class="comment">/ Format for readability /</span>
+    <span class="keyword">FORMAT</span> total2022 total2023 comma12. 
+            avgQ1 avgQ2 avgQ3 avgQ4 comma12. 
+            yoy_growth 5.2;
+
+    <span class="keyword">DROP</span> y q;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=region_analysis;
+<span class="keyword">RUN</span>;</pre>
+
+            <div class="note">
+                <p>When declaring a multidimensional array, SAS stores the elements in row-major order. For a 2D array, this means the first dimension changes most slowly, and the second dimension changes most rapidly as you move through the variables in memory.</p>
+            </div>
+        </div>
+
+        <div id="array-of-arrays" class="no-break">
+            <h3>Array of Arrays</h3>
+            <p>Starting with SAS 9.4M3, you can create an array of arrays, which allows for even more complex data structures.</p>
+
+            <div class="example-header">Example 4: Using an array of arrays</div>
+            <pre>
+<span class="comment">/ Example using array of arrays (requires SAS 9.4M3 or later) /</span>
+<span class="keyword">DATA</span> arrayofarrays;
+    <span class="comment">/ First, create the arrays that will be elements of our main array /</span>
+    <span class="keyword">ARRAY</span> NorthRegion[4] Nord1-Nord4 (100, 200, 300, 400);
+    <span class="keyword">ARRAY</span> SouthRegion[4] Sud1-Sud4 (150, 250, 350, 450);
+    <span class="keyword">ARRAY</span> EastRegion[4] Est1-Est4 (125, 225, 325, 425);
+    <span class="keyword">ARRAY</span> WestRegion[4] Ouest1-Ouest4 (175, 275, 375, 475);
+
+    <span class="comment">/ Now create an array of arrays /</span>
+    <span class="keyword">ARRAY</span> AllRegions[4] NorthRegion SouthRegion EastRegion WestRegion;
+
+    <span class="comment">/ Calculate total for each region /</span>
+    <span class="keyword">ARRAY</span> RegionTotals[4];
+
+    <span class="keyword">DO</span> r = 1 <span class="keyword">TO</span> 4;
+        RegionTotals[r] = <span class="keyword">SUM</span>(OF AllRegions[r][*]);
+    <span class="keyword">END</span>;
+
+    <span class="comment">/ Find the highest value across all regions and quarters /</span>
+    highest_value = NorthRegion[1];  <span class="comment">/ Starting value /</span>
+    highest_region = 1;
+    highest_quarter = 1;
+
+    <span class="keyword">DO</span> r = 1 <span class="keyword">TO</span> 4;
+        <span class="keyword">DO</span> q = 1 <span class="keyword">TO</span> 4;
+            <span class="keyword">IF</span> AllRegions[r][q] > highest_value <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+                highest_value = AllRegions[r][q];
+                highest_region = r;
+                highest_quarter = q;
+            <span class="keyword">END</span>;
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+
+    <span class="comment">/ Create array of region names for lookup /</span>
+    <span class="keyword">ARRAY</span> regionnames[4] $ TEMPORARY_ ('North', 'South', 'East', 'West');
+    <span class="keyword">ARRAY</span> quarternames[4] $ TEMPORARY_ ('Q1', 'Q2', 'Q3', 'Q4');
+
+    bestregion = regionnames[highest_region];
+    bestquarter = quarternames[highest_quarter];
+
+    <span class="comment">/ Rename total variables for clarity /</span>
+    <span class="keyword">RENAME</span> RegionTotals1=NorthTotal RegionTotals2=SouthTotal 
+            RegionTotals3=EastTotal RegionTotals4=WestTotal;
+
+    <span class="keyword">DROP</span> r q highestregion highestquarter;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=arrayofarrays;
+<span class="keyword">RUN</span>;</pre>
+
+            <div class="warning">
+                <p>Arrays of arrays require SAS 9.4M3 or later. In earlier versions, you can simulate this functionality using multidimensional arrays or creative indexing with single-dimension arrays.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="hash-objects" class="section">
+        <h2>Hash Objects</h2>
+
+        <p>Hash objects provide a powerful way to store, search, and retrieve data using key-value pairs. They're especially useful for table lookups, data matching, and eliminating duplicates.</p>
+
+        <div id="hash-basics" class="no-break">
+            <h3>Basic Hash Object Techniques</h3>
+
+            <div class="example-header">Example 5: Simple hash lookup</div>
+            <pre>
+<span class="comment">/ Create a dataset with product information /</span>
+<span class="keyword">DATA</span> products;
+    <span class="keyword">INPUT</span> productid $ productname $ price;
+    <span class="keyword">DATALINES</span>;
+P001 Laptop 1299.99
+P002 Smartphone 899.50
+P003 Tablet 499.75
+P004 Monitor 349.99
+P005 Keyboard 89.50
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/ Create a dataset with order information /</span>
+<span class="keyword">DATA</span> orders;
+    <span class="keyword">INPUT</span> orderid $ customerid $ product_id $ quantity;
+    <span class="keyword">DATALINES</span>;
+O001 C123 P002 1
+O002 C456 P001 1
+O003 C789 P003 2
+O004 C123 P005 3
+O005 C456 P004 2
+O006 C789 P002 1
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/ Use a hash object to look up product information /</span>
+<span class="keyword">DATA</span> order_details;
+    <span class="comment">/ Declare hash object at compile time /</span>
+    <span class="keyword">IF</span> N = 1 <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="comment">/ Load product data into a hash object /</span>
+        <span class="keyword">DECLARE</span> hash product_hash(dataset: 'products');
+
+        <span class="comment">/ Define the key and data fields /</span>
+        producthash.defineKey('productid');
+        producthash.defineData('productname', 'price');
+
+        <span class="comment">/ Complete hash object definition /</span>
+        product_hash.defineDone();
+    <span class="keyword">END</span>;
+
+    <span class="comment">/ Process orders /</span>
+    <span class="keyword">SET</span> orders;
+
+    <span class="comment">/ Look up the product information /</span>
+    rc = product_hash.find();
+
+    <span class="keyword">IF</span> rc = 0 <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="comment">/ Calculate order amount /</span>
+        order_amount = price * quantity;
+    <span class="keyword">END</span>;
+    <span class="keyword">ELSE</span> <span class="keyword">DO</span>;
+        <span class="comment">/ Handle case where product_id is not found /</span>
+        product_name = 'UNKNOWN';
+        price = .;
+        order_amount = .;
+    <span class="keyword">END</span>;
+
+    <span class="keyword">FORMAT</span> price order_amount dollar10.2;
+    <span class="keyword">DROP</span> rc;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=order_details;
+<span class="keyword">RUN</span>;</pre>
+
+            <p>This example demonstrates:</p>
+            <ul>
+                <li>Creating a hash object to store product information</li>
+                <li>Using the hash object to look up product details when processing orders</li>
+                <li>Calculating order amounts based on the looked-up price</li>
+            </ul>
+
+            <div class="note">
+                <p>Hash objects are initialized at run time, which is why they are typically created inside a conditional block that executes only once (IF N = 1 THEN DO).</p>
+            </div>
+        </div>
+
+        <div id="hash-iterators" class="no-break">
+            <h3>Hash Iterators</h3>
+            <p>Hash iterators allow you to sequentially process all entries in a hash object.</p>
+
+            <div class="example-header">Example 6: Using hash iterators</div>
+            <pre>
+<span class="comment">/ Create a dataset with sales by region and product /</span>
+<span class="keyword">DATA</span> regional_sales;
+    <span class="keyword">INPUT</span> region $ product_id $ sales;
+    <span class="keyword">DATALINES</span>;
+North P001 25000
+South P001 18000
+East P001 22000
+West P001 30000
+North P002 15000
+South P002 20000
+East P002 18000
+West P002 22000
+North P003 10000
+South P003 12000
+East P003 9000
+West P003 14000
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/ Calculate product totals and rankings using hash objects /</span>
+<span class="keyword">DATA</span> product_summary;
+    <span class="comment">/ Initialize hash object for product totals /</span>
+    <span class="keyword">DECLARE</span> hash product_hash();
+    producthash.defineKey('productid');
+    producthash.defineData('productid', 'total_sales');
+    product_hash.defineDone();
+
+    <span class="comment">/ Create hash iterator for sorted output /</span>
+    <span class="keyword">DECLARE</span> hiter productiter('producthash');
+
+    <span class="comment">/ Process input data /</span>
+    <span class="keyword">DO</span> <span class="keyword">UNTIL</span>(eof);
+        <span class="keyword">SET</span> regional_sales <span class="keyword">END</span>=eof;
+
+        <span class="comment">/ Look up product in hash object /</span>
+        rc = product_hash.find();
+
+        <span class="keyword">IF</span> rc ^= 0 <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+            <span class="comment">/ First time seeing this product /</span>
+            total_sales = sales;
+            product_hash.add();
+        <span class="keyword">END</span>;
+        <span class="keyword">ELSE</span> <span class="keyword">DO</span>;
+            <span class="comment">/ Update existing product total /</span>
+            totalsales = totalsales + sales;
+            product_hash.replace();
+        <span class="keyword">END</span>;
+    <span class="keyword">
+	END</span>;
+    
+    <span class="comment">/* Output product totals in sorted order */</span>
+    <span class="keyword">DO</span> <span class="keyword">WHILE</span>(product_iter.next() = 0);
+        output;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Only keep summarized data */</span>
+    <span class="keyword">KEEP</span> product_id total_sales;
+    <span class="keyword">STOP</span>;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=product_summary;
+    <span class="keyword">BY</span> <span class="keyword">DESCENDING</span> total_sales;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">DATA</span> product_summary_ranked;
+    <span class="keyword">SET</span> product_summary;
+    rank = _N_;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=product_summary_ranked;
+    <span class="keyword">TITLE</span> 'Product Sales Ranking';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+            
+            <div class="tip">
+                <p><strong>Performance Tip:</strong> Hash objects exist only in memory and are generally much faster than traditional lookup methods using merges or SQL joins, especially for large datasets.</p>
+            </div>
+        </div>
+        
+        <div id="hash-applications" class="no-break">
+            <h3>Advanced Hash Applications</h3>
+            
+            <div class="example-header">Example 7: Deduplication using a hash object</div>
+            <pre>
+<span class="comment">/* Create a dataset with potential duplicates */</span>
+<span class="keyword">DATA</span> customer_contacts;
+    <span class="keyword">INPUT</span> customer_id $ email $ contact_date date9.;
+    <span class="keyword">FORMAT</span> contact_date date9.;
+    <span class="keyword">DATALINES</span>;
+C001 john@example.com 01JAN2023
+C002 jane@example.com 05JAN2023
+C001 john@example.com 12JAN2023
+C003 mike@example.com 15JAN2023
+C002 jane@example.com 18JAN2023
+C004 sue@example.com 20JAN2023
+C001 john@example.com 25JAN2023
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Use a hash object to find the latest contact for each customer */</span>
+<span class="keyword">DATA</span> latest_contacts;
+    <span class="comment">/* Create hash object to track the latest contact date */</span>
+    <span class="keyword">DECLARE</span> hash customer_hash();
+    customer_hash.defineKey('customer_id');
+    customer_hash.defineData('customer_id', 'email', 'contact_date', 'is_latest');
+    customer_hash.defineDone();
+    
+    <span class="comment">/* Process all records */</span>
+    <span class="keyword">DO</span> <span class="keyword">UNTIL</span>(eof);
+        <span class="keyword">SET</span> customer_contacts <span class="keyword">END</span>=eof;
+        
+        <span class="comment">/* Look for existing customer record */</span>
+        rc = customer_hash.find();
+        
+        <span class="keyword">IF</span> rc ^= 0 <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+            <span class="comment">/* First contact with this customer */</span>
+            is_latest = 1;
+            customer_hash.add();
+        <span class="keyword">END</span>;
+        <span class="keyword">ELSE</span> <span class="keyword">DO</span>;
+            <span class="comment">/* Update if this contact is more recent */</span>
+            <span class="keyword">IF</span> contact_date > contact_date <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+                is_latest = 1;
+                customer_hash.replace();
+            <span class="keyword">END</span>;
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Create iterator for the hash object */</span>
+    <span class="keyword">DECLARE</span> hiter customer_iter('customer_hash');
+    
+    <span class="comment">/* Output latest contact for each customer */</span>
+    <span class="keyword">DO</span> <span class="keyword">WHILE</span>(customer_iter.next() = 0);
+        <span class="keyword">IF</span> is_latest = 1 <span class="keyword">THEN</span> output;
+    <span class="keyword">END</span>;
+    
+    <span class="keyword">DROP</span> rc is_latest;
+    <span class="keyword">STOP</span>;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=latest_contacts;
+    <span class="keyword">TITLE</span> 'Latest Customer Contacts';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+
+            <div class="example-header">Example 8: Multi-key hash object for complex lookups</div>
+            <pre>
+<span class="comment">/* Create a pricing table with multiple factors */</span>
+<span class="keyword">DATA</span> price_matrix;
+    <span class="keyword">INPUT</span> product_type $ customer_tier $ order_size $ base_price discount;
+    <span class="keyword">DATALINES</span>;
+Hardware Premium Large 1000 0.20
+Hardware Premium Small 1000 0.15
+Hardware Standard Large 1000 0.10
+Hardware Standard Small 1000 0.05
+Software Premium Large 800 0.25
+Software Premium Small 800 0.20
+Software Standard Large 800 0.15
+Software Standard Small 800 0.10
+Service Premium Large 500 0.15
+Service Premium Small 500 0.10
+Service Standard Large 500 0.05
+Service Standard Small 500 0.02
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Create order data */</span>
+<span class="keyword">DATA</span> orders;
+    <span class="keyword">INPUT</span> order_id $ product_type $ customer_tier $ quantity;
+    <span class="comment">/* Classify order size based on quantity */</span>
+    <span class="keyword">IF</span> quantity >= 10 <span class="keyword">THEN</span> order_size = 'Large';
+    <span class="keyword">ELSE</span> order_size = 'Small';
+    <span class="keyword">DATALINES</span>;
+O101 Hardware Premium 12
+O102 Software Standard 5
+O103 Service Premium 8
+O104 Hardware Standard 15
+O105 Software Premium 20
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Use a multi-key hash object to determine pricing */</span>
+<span class="keyword">DATA</span> order_pricing;
+    <span class="comment">/* Initialize price matrix hash */</span>
+    <span class="keyword">IF</span> _N_ = 1 <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="keyword">DECLARE</span> hash price_hash(dataset: 'price_matrix');
+        <span class="comment">/* Define multiple keys for lookup */</span>
+        price_hash.defineKey('product_type', 'customer_tier', 'order_size');
+        price_hash.defineData('base_price', 'discount');
+        price_hash.defineDone();
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Process orders */</span>
+    <span class="keyword">SET</span> orders;
+    
+    <span class="comment">/* Look up pricing information */</span>
+    rc = price_hash.find();
+    
+    <span class="keyword">IF</span> rc = 0 <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="comment">/* Calculate total price with discount */</span>
+        unit_price = base_price * (1 - discount);
+        total_price = unit_price * quantity;
+    <span class="keyword">END</span>;
+    <span class="keyword">ELSE</span> <span class="keyword">DO</span>;
+        <span class="comment">/* Handle pricing not found */</span>
+        put "WARNING: Pricing not found for " product_type= customer_tier= order_size=;
+        unit_price = .;
+        total_price = .;
+    <span class="keyword">END</span>;
+    
+    <span class="keyword">FORMAT</span> base_price unit_price dollar10.2 discount percent8.2 total_price dollar12.2;
+    <span class="keyword">DROP</span> rc;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=order_pricing;
+<span class="keyword">RUN</span>;</pre>
+            
+            <div class="note">
+                <p>Hash objects support multiple keys for complex lookups, making them ideal for implementing multidimensional lookup tables that would otherwise require nested IF-THEN-ELSE structures or complex SQL joins.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="by-group" class="section">
+        <h2>By-Group Processing</h2>
+        
+        <p>By-group processing is a powerful technique for performing operations on groups of observations that share common values for one or more variables.</p>
+        
+        <div id="bygroup-basics" class="no-break">
+            <h3>By-Group Basics</h3>
+            
+            <div class="example-header">Example 9: Simple by-group processing</div>
+            <pre>
+<span class="comment">/* Create sample sales data */</span>
+<span class="keyword">DATA</span> sales;
+    <span class="keyword">INPUT</span> region $ product $ sales_date date9. amount;
+    <span class="keyword">FORMAT</span> sales_date date9. amount dollar10.2;
+    <span class="keyword">DATALINES</span>;
+East Widget 15JAN2023 1200
+East Gadget 18JAN2023 950
+West Widget 20JAN2023 1450
+East Widget 22JAN2023 1100
+West Gadget 25JAN2023 1300
+North Widget 27JAN2023 1050
+North Gadget 28JAN2023 875
+East Gadget 30JAN2023 925
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Sort data by region for by-group processing */</span>
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=sales;
+    <span class="keyword">BY</span> region;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Calculate regional totals using by-group processing */</span>
+<span class="keyword">DATA</span> region_summary;
+    <span class="keyword">SET</span> sales;
+    <span class="keyword">BY</span> region;
+    
+    <span class="comment">/* Initialize counters at start of each region */</span>
+    <span class="keyword">IF</span> FIRST.region <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        region_total = 0;
+        region_count = 0;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Update counters for each record */</span>
+    region_total + amount;
+    region_count + 1;
+    
+    <span class="comment">/* Output summary when we reach the last record for a region */</span>
+    <span class="keyword">IF</span> LAST.region <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        region_avg = region_total / region_count;
+        output;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Keep only the summary variables */</span>
+    <span class="keyword">KEEP</span> region region_total region_count region_avg;
+    <span class="keyword">FORMAT</span> region_avg dollar10.2;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=region_summary;
+    <span class="keyword">TITLE</span> 'Sales Summary by Region';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+            
+            <p>In this example:</p>
+            <ul>
+                <li>We first sort the data by region to enable by-group processing</li>
+                <li>The BY statement creates automatic variables FIRST.region and LAST.region</li>
+                <li>FIRST.region is true for the first observation in each region group</li>
+                <li>LAST.region is true for the last observation in each region group</li>
+                <li>We use these automatic variables to initialize counters and output summary statistics</li>
+            </ul>
+        </div>
+        
+        <div id="first-last-variables" class="no-break">
+            <h3>FIRST. and LAST. Variables</h3>
+            
+            <div class="example-header">Example 10: Working with multiple BY variables</div>
+            <pre>
+<span class="comment">/* Sort data by region and product for hierarchical by-group processing */</span>
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=sales;
+    <span class="keyword">BY</span> region product;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Create a hierarchical summary */</span>
+<span class="keyword">DATA</span> region_product_summary;
+    <span class="keyword">SET</span> sales;
+    <span class="keyword">BY</span> region product;
+    
+    <span class="comment">/* Handle new regions */</span>
+    <span class="keyword">IF</span> FIRST.region <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        region_total = 0;
+        region_output = 0;  <span class="comment">/* Flag to ensure we output region total only once */</span>
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Handle new products within regions */</span>
+    <span class="keyword">IF</span> FIRST.product <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        product_total = 0;
+        product_count = 0;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Accumulate sums */</span>
+    product_total + amount;
+    product_count + 1;
+    region_total + amount;
+    
+    <span class="comment">/* Output product summary at end of each product group */</span>
+    <span class="keyword">IF</span> LAST.product <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        summary_level = 'Product';
+        summary_name = product;
+        total_amount = product_total;
+        count = product_count;
+        average = product_total / product_count;
+        output;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Output region summary at end of region */</span>
+    <span class="keyword">IF</span> LAST.region <span class="keyword">AND</span> region_output = 0 <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        summary_level = 'Region';
+        summary_name = region;
+        total_amount = region_total;
+        count = .;  <span class="comment">/* Not calculating count for region level */</span>
+        average = .;  <span class="comment">/* Not calculating average for region level */</span>
+        region_output = 1;
+        output;
+    <span class="keyword">END</span>;
+    
+    <span class="keyword">KEEP</span> summary_level summary_name total_amount count average;
+    <span class="keyword">FORMAT</span> total_amount dollar12.2 average dollar10.2;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=region_product_summary;
+    <span class="keyword">TITLE</span> 'Hierarchical Sales Summary';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+            
+            <div class="tip">
+                <p><strong>Efficiency Tip:</strong> When using multiple BY variables, SAS creates FIRST. and LAST. variables for each one, allowing for hierarchical processing. The variables reflect the position of an observation within a particular level of the hierarchy.</p>
+            </div>
+        </div>
+        
+        <div id="complex-bygroup" class="no-break">
+            <h3>Complex By-Group Applications</h3>
+            
+            <div class="example-header">Example 11: Calculating running statistics within groups</div>
+            <pre>
+<span class="comment">/* Create a dataset with monthly sales */</span>
+<span class="keyword">DATA</span> monthly_sales;
+    <span class="keyword">INPUT</span> store $ year month sales;
+    <span class="keyword">DATALINES</span>;
+Store1 2022 1 45000
+Store1 2022 2 48000
+Store1 2022 3 52000
+Store1 2022 4 49000
+Store1 2022 5 51000
+Store1 2022 6 53000
+Store2 2022 1 37000
+Store2 2022 2 39000
+Store2 2022 3 41000
+Store2 2022 4 40000
+Store2 2022 5 43000
+Store2 2022 6 45000
+Store1 2023 1 47000
+Store1 2023 2 50000
+Store1 2023 3 54000
+Store1 2023 4 51000
+Store1 2023 5 53000
+Store1 2023 6 56000
+Store2 2023 1 38000
+Store2 2023 2 41000
+Store2 2023 3 43000
+Store2 2023 4 42000
+Store2 2023 5 45000
+Store2 2023 6 47000
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Sort by store, year, and month */</span>
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=monthly_sales;
+    <span class="keyword">BY</span> store year month;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Calculate running statistics by store and year */</span>
+<span class="keyword">DATA</span> sales_analysis;
+    <span class="keyword">SET</span> monthly_sales;
+    <span class="keyword">BY</span> store year;
+    
+    <span class="comment">/* Create date value for easier reference */</span>
+    sales_date = <span class="keyword">MDY</span>(month, 1, year);
+    <span class="keyword">FORMAT</span> sales_date monyy7.;
+    
+    <span class="comment">/* Initialize counters at start of each store-year combination */</span>
+    <span class="keyword">IF</span> FIRST.year <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        ytd_sales = 0;
+        ytd_count = 0;
+        max_month_sales = sales;
+        max_month = month;
+        running_avg = .;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Update running statistics */</span>
+    ytd_sales + sales;
+    ytd_count + 1;
+    running_avg = ytd_sales / ytd_count;
+    
+    <span class="comment">/* Track maximum monthly sales */</span>
+    <span class="keyword">IF</span> sales > max_month_sales <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        max_month_sales = sales;
+        max_month = month;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Calculate percent of YTD target (assuming target is 300000) */</span>
+    <span class="keyword">IF</span> store = 'Store1' <span class="keyword">THEN</span> ytd_target = 300000;
+    <span class="keyword">ELSE</span> ytd_target = 250000;
+    
+    ytd_percent = (ytd_sales / ytd_target) * 100;
+    
+    <span class="comment">/* Add prior year comparison */</span>
+    <span class="keyword">IF</span> year = 2023 <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="keyword">SET</span> monthly_sales(
+            <span class="keyword">WHERE</span>=(year = 2022 <span class="keyword">AND</span> store = store <span class="keyword">AND</span> month <= month))
+            <span class="keyword">END</span>=found;
+        <span class="keyword">BY</span> store month;
+        <span class="keyword">IF</span> found <span class="keyword">AND</span> LAST.month <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+            py_sales = ytd_sales;
+            yoy_growth = ((ytd_sales - py_sales) / py_sales) * 100;
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+    
+    <span class="keyword">FORMAT</span> sales ytd_sales dollar12. running_avg dollar12.2 
+            ytd_percent percent7.1 yoy_growth percent7.1;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=sales_analysis;
+    <span class="keyword">TITLE</span> 'Monthly Sales Analysis with Running Statistics';
+    <span class="keyword">BY</span> store year;
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+            
+            <div class="note">
+                <p>This example demonstrates advanced by-group processing with multiple layers:</p>
+                <ul>
+                    <li>Calculating running totals and averages within store/year groups</li>
+                    <li>Tracking maximum values within groups</li>
+                    <li>Calculating percentages against targets</li>
+                    <li>Comparing current-year values with prior-year values</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="lookahead" class="section">
+        <h2>Look-Ahead Processing</h2>
+        
+        <p>Look-ahead processing allows you to read ahead in your data without moving the observation pointer, which is useful for handling input data with varying formats or making decisions based on upcoming values.</p>
+        
+        <div id="double-trailing-dot" class="no-break">
+            <h3>Double Trailing @ Sign</h3>
+            
+            <div class="example-header">Example 12: Reading multiple records per observation</div>
+            <pre>
+<span class="comment">/* Create a file with paired records (customer info and order info) */</span>
+<span class="keyword">DATA</span> _NULL_;
+    <span class="keyword">FILE</span> 'customer_orders.txt';
+    <span class="keyword">INPUT</span> line $80.;
+    <span class="keyword">DATALINES</span>;
+CUSTOMER|C1001|John Smith|Premium
+ORDER|O5001|Product A|2|99.95
+CUSTOMER|C1002|Jane Doe|Standard
+ORDER|O5002|Product B|1|49.99
+ORDER|O5003|Product C|3|19.95
+CUSTOMER|C1003|Bob Johnson|Premium
+ORDER|O5004|Product D|1|149.99
+ORDER|O5005|Product A|1|99.95
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Read the paired records using the double trailing @ */</span>
+<span class="keyword">DATA</span> customer_orders;
+    <span class="keyword">INFILE</span> 'customer_orders.txt';
+    length record_type \$8 customer_id \$10 customer_name \$20 customer_tier \$10
+           order_id \$10 product_name $20;
+    
+    <span class="comment">/* Read the record type first */</span>
+    <span class="keyword">INPUT</span> @1 record_type $8. @;
+    
+    <span class="comment">/* Process based on record type */</span>
+    <span class="keyword">IF</span> record_type = 'CUSTOMER' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="comment">/* Read customer information */</span>
+        <span class="keyword">INPUT</span> record_type \$8. @10 customer_id \$10. @21 customer_name \$20. @42 customer_tier $10.;
+        order_id = ' ';
+        product_name = ' ';
+        quantity = .;
+        unit_price = .;
+        output;
+    <span class="keyword">END</span>;
+    <span class="keyword">ELSE</span> <span class="keyword">IF</span> record_type = 'ORDER' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="comment">/* Read order information */</span>
+        <span class="keyword">INPUT</span> record_type \$8. @10 order_id \$10. @21 product_name $20. @42 quantity 1. @44 unit_price 6.2;
+        output;
+    <span class="keyword">END</span>;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Another approach using the RETAIN statement to maintain customer info */</span>
+<span class="keyword">DATA</span> customer_orders_retain;
+    <span class="keyword">INFILE</span> 'customer_orders.txt';
+    length record_type \$8 customer_id \$10 customer_name \$20 customer_tier \$10
+           order_id \$10 product_name $20;
+    
+    <span class="comment">/* Retain customer information across records */</span>
+    <span class="keyword">RETAIN</span> customer_id customer_name customer_tier;
+    
+    <span class="comment">/* Read the record type first */</span>
+    <span class="keyword">INPUT</span> @1 record_type $8. @;
+    
+    <span class="comment">/* Process based on record type */</span>
+    <span class="keyword">IF</span> record_type = 'CUSTOMER' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="comment">/* Read customer information */</span>
+        <span class="keyword">INPUT</span> record_type \$8. @10 customer_id \$10. @21 customer_name \$20. @42 customer_tier $10.;
+        <span class="comment">/* Don't output customer records */</span>
+    <span class="keyword">END</span>;
+    <span class="keyword">ELSE</span> <span class="keyword">IF</span> record_type = 'ORDER' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="comment">/* Read order information */</span>
+        <span class="keyword">INPUT</span> record_type \$8. @10 order_id \$10. @21 product_name $20. @42 quantity 1. @44 unit_price 6.2;
+        
+        <span class="comment">/* Calculate total price */</span>
+        total_price = quantity * unit_price;
+        
+        <span class="comment">/* Apply discount based on customer tier */</span>
+        <span class="keyword">IF</span> customer_tier = 'Premium' <span class="keyword">THEN</span> discount = 0.10;
+        <span class="keyword">ELSE</span> discount = 0;
+        
+        discounted_price = total_price * (1 - discount);
+        
+        <span class="comment">/* Output the combined record */</span>
+        output;
+    <span class="keyword">END</span>;
+    
+    <span class="keyword">FORMAT</span> unit_price total_price discounted_price dollar10.2 discount percent7.2;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=customer_orders_retain;
+    <span class="keyword">TITLE</span> 'Customer Orders with Retained Information';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+        </div>
+        
+        <div id="line-pointer" class="no-break">
+            <h3>Line Pointer Controls</h3>
+            
+            <div class="example-header">Example 13: Reading fixed-width data with varying record structures</div>
+            <pre>
+<span class="comment">/* Create a file with different record types (header, detail, footer) */</span>
+<span class="keyword">DATA</span> _NULL_;
+    <span class="keyword">FILE</span> 'sales_report.txt';
+    <span class="keyword">INPUT</span> line $80.;
+    <span class="keyword">DATALINES</span>;
+H20230131MONTHLY SALES REPORT       
+D001STORE1  ELECTRONICS   45792.50
+D002STORE1  APPLIANCES    32451.75
+D003STORE1  FURNITURE     28765.25
+D004STORE2  ELECTRONICS   38976.00
+D005STORE2  APPLIANCES    27654.50
+D006STORE2  FURNITURE     22345.75
+D007STORE3  ELECTRONICS   42367.25
+D008STORE3  APPLIANCES    30987.50
+D009STORE3  FURNITURE     25489.75
+F000000009TOTAL          294830.25
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Process the file with different record structures */</span>
+<span class="keyword">DATA</span> sales_header 
+     sales_detail 
+     sales_footer;
+    <span class="keyword">INFILE</span> 'sales_report.txt';
+    
+    <span class="comment">/* Read record type indicator */</span>
+    <span class="keyword">INPUT</span> @1 record_type $1. @;
+    
+    <span class="comment">/* Process header record */</span>
+    <span class="keyword">IF</span> record_type = 'H' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="keyword">INPUT</span> record_type \$1. 
+              @2 report_date yymmdd8.
+              @10 report_title $30.;
+        
+        <span class="comment">/* Format the date for readability */</span>
+        <span class="keyword">FORMAT</span> report_date date9.;
+        
+        <span class="comment">/* Output to header dataset */</span>
+        output sales_header;
+    <span class="keywo
+<span class="comment">/* Process detail record */</span>
+    <span class="keyword">ELSE IF</span> record_type = 'D' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="keyword">INPUT</span> record_type \$1. 
+              @2 transaction_id \$3.
+              @5 store_id \$8.
+              @13 department $14.
+              @27 sales_amount comma10.2;
+        
+        <span class="keyword">FORMAT</span> sales_amount dollar12.2;
+        
+        <span class="comment">/* Output to detail dataset */</span>
+        output sales_detail;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Process footer record */</span>
+    <span class="keyword">ELSE IF</span> record_type = 'F' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="keyword">INPUT</span> record_type \$1. 
+              @2 record_count 9.
+              @11 total_label $14.
+              @25 total_amount comma10.2;
+        
+        <span class="keyword">FORMAT</span> total_amount dollar12.2;
+        
+        <span class="comment">/* Output to footer dataset */</span>
+        output sales_footer;
+    <span class="keyword">END</span>;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Print the processed data */</span>
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=sales_header;
+    <span class="keyword">TITLE</span> 'Sales Report Header';
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=sales_detail;
+    <span class="keyword">TITLE</span> 'Sales Report Details';
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=sales_footer;
+    <span class="keyword">TITLE</span> 'Sales Report Footer';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+
+            <div class="warning">
+                <p>When using line pointer controls with the INPUT statement, pay careful attention to the position indicators. One incorrect position can cause the entire read operation to misalign, especially with fixed-width formats.</p>
+            </div>
+            
+            <div class="example-header">Example 14: Reading variable-length records with line pointer controls</div>
+            <pre>
+<span class="comment">/* Create raw data with variable length records */</span>
+<span class="keyword">DATA</span> _NULL_;
+    <span class="keyword">FILE</span> 'variable_data.txt';
+    <span class="keyword">PUT</span> 'CUST|100|John Smith|jsmith@example.com';
+    <span class="keyword">PUT</span> 'ADDR|100|123 Main St|Anytown|NY|12345';
+    <span class="keyword">PUT</span> 'ORDER|100|PROD-A|2|19.99';
+    <span class="keyword">PUT</span> 'ORDER|100|PROD-B|1|34.50';
+    <span class="keyword">PUT</span> 'CUST|101|Jane Doe|jdoe@example.com';
+    <span class="keyword">PUT</span> 'ADDR|101|456 Oak Ave|Somewhere|CA|90210';
+    <span class="keyword">PUT</span> 'ORDER|101|PROD-C|3|12.75';
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Process variable-length records using line holder technique */</span>
+<span class="keyword">DATA</span> customers
+     addresses
+     orders;
+    <span class="keyword">INFILE</span> 'variable_data.txt' DLM='|';
+    length record_type \$5 customer_id 8 customer_name \$20 email \$30
+           street \$30 city \$20 state \$2 zip \$10
+           product_id $10;
+    
+    <span class="comment">/* Read the record type and customer ID first */</span>
+    <span class="keyword">INPUT</span> record_type $ customer_id;
+    
+    <span class="comment">/* Process based on record type */</span>
+    <span class="keyword">IF</span> record_type = 'CUST' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="keyword">INPUT</span> customer_name $ email $;
+        output customers;
+    <span class="keyword">END</span>;
+    <span class="keyword">ELSE IF</span> record_type = 'ADDR' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="keyword">INPUT</span> street $ city $ state $ zip $;
+        output addresses;
+    <span class="keyword">END</span>;
+    <span class="keyword">ELSE IF</span> record_type = 'ORDER' <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+        <span class="keyword">INPUT</span> product_id $ quantity unit_price;
+        
+        <span class="comment">/* Calculate total price */</span>
+        total_price = quantity * unit_price;
+        
+        <span class="keyword">FORMAT</span> unit_price total_price dollar10.2;
+        output orders;
+    <span class="keyword">END</span>;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Combine all data into a complete customer profile */</span>
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=customers;
+    <span class="keyword">BY</span> customer_id;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=addresses;
+    <span class="keyword">BY</span> customer_id;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=orders;
+    <span class="keyword">BY</span> customer_id;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Merge customer and address information */</span>
+<span class="keyword">DATA</span> customer_profiles;
+    <span class="keyword">MERGE</span> customers addresses;
+    <span class="keyword">BY</span> customer_id;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Create a detailed order report with customer information */</span>
+<span class="keyword">DATA</span> order_details;
+    <span class="keyword">MERGE</span> customer_profiles orders(IN=has_order);
+    <span class="keyword">BY</span> customer_id;
+    <span class="keyword">IF</span> has_order;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=order_details;
+    <span class="keyword">TITLE</span> 'Customer Order Details';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+            
+            <p>This example demonstrates:</p>
+            <ul>
+                <li>Reading variable-length records with different structures</li>
+                <li>Using the delimiter-list (DLM) input style to handle fields separated by a character</li>
+                <li>Splitting the input data into separate datasets based on record type</li>
+                <li>Recombining the data using MERGE statements to create a complete view</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="complex-logic" class="section">
+        <h2>Advanced Programming Logic</h2>
+        
+        <div id="select-when" class="no-break">
+            <h3>SELECT-WHEN Statements</h3>
+            <p>The SELECT-WHEN structure provides a cleaner alternative to nested IF-THEN-ELSE statements when you need to test a variable against multiple values or conditions.</p>
+            
+            <div class="example-header">Example 15: Using SELECT-WHEN for complex categorization</div>
+            <pre>
+<span class="comment">/* Create sample customer data */</span>
+<span class="keyword">DATA</span> customers;
+    <span class="keyword">INPUT</span> customer_id $ age annual_income purchase_frequency;
+    <span class="keyword">DATALINES</span>;
+C001 28 45000 24
+C002 35 78000 12
+C003 42 125000 36
+C004 19 22000 6
+C005 67 85000 18
+C006 31 49000 30
+C007 55 150000 48
+C008 47 62000 9
+C009 24 31000 15
+C010 72 105000 24
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Categorize customers using SELECT-WHEN */</span>
+<span class="keyword">DATA</span> customer_segments;
+    <span class="keyword">SET</span> customers;
+    
+    <span class="comment">/* Calculate customer value score */</span>
+    value_score = (annual_income / 1000) * (purchase_frequency / 12);
+    
+    <span class="comment">/* Categorize customers by age group */</span>
+    <span class="keyword">SELECT</span>;
+        <span class="keyword">WHEN</span>(age < 25) age_group = 'Young Adult';
+        <span class="keyword">WHEN</span>(25 <= age < 40) age_group = 'Adult';
+        <span class="keyword">WHEN</span>(40 <= age < 60) age_group = 'Middle Age';
+        <span class="keyword">WHEN</span>(age >= 60) age_group = 'Senior';
+        <span class="keyword">OTHERWISE</span> age_group = 'Unknown';
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Categorize by income level */</span>
+    <span class="keyword">SELECT</span>;
+        <span class="keyword">WHEN</span>(annual_income < 30000) income_tier = 'Low Income';
+        <span class="keyword">WHEN</span>(30000 <= annual_income < 60000) income_tier = 'Lower Middle';
+        <span class="keyword">WHEN</span>(60000 <= annual_income < 100000) income_tier = 'Upper Middle';
+        <span class="keyword">WHEN</span>(annual_income >= 100000) income_tier = 'High Income';
+        <span class="keyword">OTHERWISE</span> income_tier = 'Unknown';
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Categorize by purchase frequency */</span>
+    <span class="keyword">SELECT</span>;
+        <span class="keyword">WHEN</span>(purchase_frequency < 12) purchase_segment = 'Infrequent';
+        <span class="keyword">WHEN</span>(12 <= purchase_frequency < 24) purchase_segment = 'Regular';
+        <span class="keyword">WHEN</span>(24 <= purchase_frequency < 36) purchase_segment = 'Frequent';
+        <span class="keyword">WHEN</span>(purchase_frequency >= 36) purchase_segment = 'Very Frequent';
+        <span class="keyword">OTHERWISE</span> purchase_segment = 'Unknown';
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Determine overall customer segment based on multiple factors */</span>
+    <span class="keyword">SELECT</span>;
+        <span class="keyword">WHEN</span>(value_score >= 500) segment = 'Platinum';
+        <span class="keyword">WHEN</span>(value_score >= 300) segment = 'Gold';
+        <span class="keyword">WHEN</span>(value_score >= 150) segment = 'Silver';
+        <span class="keyword">WHEN</span>(value_score >= 75) segment = 'Bronze';
+        <span class="keyword">OTHERWISE</span> segment = 'Standard';
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Determine marketing approach based on segment and age */</span>
+    <span class="keyword">SELECT</span>;
+        <span class="keyword">WHEN</span>(segment = 'Platinum' <span class="keyword">OR</span> segment = 'Gold') 
+            <span class="keyword">DO</span>;
+                priority = 'High';
+                
+                <span class="comment">/* Nested SELECT for age-specific approach */</span>
+                <span class="keyword">SELECT</span>;
+                    <span class="keyword">WHEN</span>(age < 40) approach = 'Digital Premium';
+                    <span class="keyword">WHEN</span>(age >= 40) approach = 'Traditional Premium';
+                    <span class="keyword">OTHERWISE</span> approach = 'Standard Premium';
+                <span class="keyword">END</span>;
+            <span class="keyword">END</span>;
+        
+        <span class="keyword">WHEN</span>(segment = 'Silver') 
+            <span class="keyword">DO</span>;
+                priority = 'Medium';
+                
+                <span class="keyword">SELECT</span>;
+                    <span class="keyword">WHEN</span>(age < 40) approach = 'Digital Standard';
+                    <span class="keyword">WHEN</span>(age >= 40) approach = 'Traditional Standard';
+                    <span class="keyword">OTHERWISE</span> approach = 'Default Standard';
+                <span class="keyword">END</span>;
+            <span class="keyword">END</span>;
+        
+        <span class="keyword">OTHERWISE</span> 
+            <span class="keyword">DO</span>;
+                priority = 'Low';
+                approach = 'Basic Channel';
+            <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+    
+    <span class="keyword">FORMAT</span> value_score 7.1;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=customer_segments;
+    <span class="keyword">TITLE</span> 'Customer Segmentation Analysis';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+            
+            <div class="tip">
+                <p><strong>Efficiency Tip:</strong> SELECT-WHEN statements often provide clearer, more maintainable code than nested IF-THEN-ELSE structures, especially when testing a single variable against multiple conditions.</p>
+            </div>
+        </div>
+        
+        <div id="do-loop-variants" class="no-break">
+            <h3>DO Loop Variants</h3>
+            <p>SAS provides several types of DO loops for different iteration patterns and conditions.</p>
+            
+            <div class="example-header">Example 16: Using various DO loop forms</div>
+            <pre>
+<span class="comment">/* Create a dataset demonstrating different DO loop variants */</span>
+<span class="keyword">DATA</span> do_loop_examples;
+    <span class="comment">/* Basic DO loop with specific iteration count */</span>
+    result = 0;
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> 5;
+        result + i;
+    <span class="keyword">END</span>;
+    method = 'Basic DO';
+    output;
+    
+    <span class="comment">/* DO loop with a step value */</span>
+    result = 0;
+    <span class="keyword">DO</span> i = 0 <span class="keyword">TO</span> 10 <span class="keyword">BY</span> 2;
+        result + i;
+    <span class="keyword">END</span>;
+    method = 'DO with STEP';
+    output;
+    
+    <span class="comment">/* DO WHILE loop (executes while condition is true) */</span>
+    result = 0;
+    i = 1;
+    <span class="keyword">DO WHILE</span>(i <= 5);
+        result + i;
+        i + 1;
+    <span class="keyword">END</span>;
+    method = 'DO WHILE';
+    output;
+    
+    <span class="comment">/* DO UNTIL loop (executes until condition becomes true) */</span>
+    result = 0;
+    i = 1;
+    <span class="keyword">DO UNTIL</span>(i > 5);
+        result + i;
+        i + 1;
+    <span class="keyword">END</span>;
+    method = 'DO UNTIL';
+    output;
+    
+    <span class="comment">/* Iterative DO with a list of values */</span>
+    result = 0;
+    <span class="keyword">DO</span> i = 2, 4, 6, 8, 10;
+        result + i;
+    <span class="keyword">END</span>;
+    method = 'DO with list';
+    output;
+    
+    <span class="comment">/* DO with a variable containing the iteration count */</span>
+    max_iter = 5;
+    result = 0;
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> max_iter;
+        result + i;
+    <span class="keyword">END</span>;
+    method = 'DO with variable';
+    output;
+    
+    <span class="comment">/* Nested DO loops */</span>
+    result = 0;
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> 3;
+        <span class="keyword">DO</span> j = 1 <span class="keyword">TO</span> i;
+            result + i*j;
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+    method = 'Nested DO';
+    output;
+    
+    <span class="comment">/* DO loop with conditional LEAVE */</span>
+    result = 0;
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> 10;
+        result + i;
+        <span class="keyword">IF</span> result > 15 <span class="keyword">THEN</span> <span class="keyword">LEAVE</span>;
+    <span class="keyword">END</span>;
+    method = 'DO with LEAVE';
+    output;
+    
+    <span class="comment">/* DO loop with conditional CONTINUE */</span>
+    result = 0;
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> 10;
+        <span class="keyword">IF</span> <span class="keyword">MOD</span>(i, 2) = 0 <span class="keyword">THEN</span> <span class="keyword">CONTINUE</span>;
+        result + i;  <span class="comment">/* Only adds odd numbers */</span>
+    <span class="keyword">END</span>;
+    method = 'DO with CONTINUE';
+    output;
+    
+    <span class="comment">/* Iterative DO with calculated endpoints */</span>
+    start_val = 10;
+    end_val = 100;
+    step_val = 10;
+    result = 0;
+    <span class="keyword">DO</span> i = start_val <span class="keyword">TO</span> end_val <span class="keyword">BY</span> step_val;
+        result + 1;  <span class="comment">/* Counting iterations */</span>
+    <span class="keyword">END</span>;
+    method = 'DO with calculated endpoints';
+    output;
+    
+    <span class="keyword">DROP</span> i j max_iter start_val end_val step_val;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=do_loop_examples;
+    <span class="keyword">TITLE</span> 'Demonstration of Various DO Loop Types';
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+            
+            <p>This example demonstrates:</p>
+            <ul>
+                <li>Basic DO loops with fixed iteration counts</li>
+                <li>DO loops with step values</li>
+                <li>Conditional loops with WHILE and UNTIL</li>
+                <li>List-based iteration</li>
+                <li>Nested DO loops</li>
+                <li>Flow control with LEAVE and CONTINUE</li>
+                <li>DO loops with dynamically calculated ranges</li>
+            </ul>
+        </div>
+        
+        <div id="nested-loops" class="no-break">
+            <h3>Nested Loops and Complex Conditions</h3>
+            
+            <div class="example-header">Example 17: Solving a complex problem with nested loops</div>
+            <pre>
+<span class="comment">/* Simulate a customer portfolio optimization problem */</span>
+<span class="keyword">DATA</span> customer_portfolio;
+    <span class="comment">/* Define parameters */</span>
+    <span class="keyword">ARRAY</span> customer_segments[4] $ _TEMPORARY_ ('Platinum', 'Gold', 'Silver', 'Bronze');
+    <span class="keyword">ARRAY</span> channel_types[3] $ _TEMPORARY_ ('Email', 'Phone', 'Direct Mail');
+    <span class="keyword">ARRAY</span> segment_budget[4] _TEMPORARY_ (200000, 150000, 100000, 50000);
+    <span class="keyword">ARRAY</span> channel_cost[3] _TEMPORARY_ (2, 15, 8);
+    <span class="keyword">ARRAY</span> response_rates[4,3] _TEMPORARY_ (
+        0.15, 0.10, 0.08,   <span class="comment">/* Platinum segment response rates by channel */</span>
+        0.12, 0.08, 0.06,   <span class="comment">/* Gold segment response rates by channel */</span>
+        0.08, 0.05, 0.04,   <span class="comment">/* Silver segment response rates by channel */</span>
+        0.05, 0.03, 0.02    <span class="comment">/* Bronze segment response rates by channel */</span>
+    );
+    <span class="keyword">ARRAY</span> avg_revenue[4] _TEMPORARY_ (500, 350, 200, 100);
+    
+    <span class="comment">/* Initialize optimization parameters */</span>
+    max_roi = 0;
+    best_segment = '';
+    best_channel = '';
+    best_allocation = 0;
+    
+    <span class="comment">/* Iterate through segments and channels */</span>
+    <span class="keyword">DO</span> s = 1 <span class="keyword">TO</span> 4;
+        segment = customer_segments[s];
+        budget = segment_budget[s];
+        
+        <span class="keyword">DO</span> c = 1 <span class="keyword">TO</span> 3;
+            channel = channel_types[c];
+            cost_per_contact = channel_cost[c];
+            response_rate = response_rates[s,c];
+            segment_revenue = avg_revenue[s];
+            
+            <span class="comment">/* Calculate how many customers we can reach */</span>
+            max_contacts = <span class="keyword">FLOOR</span>(budget / cost_per_contact);
+            
+            <span class="comment">/* Optimize allocation by trying different levels */</span>
+            <span class="keyword">DO</span> allocation_pct = 0.2 <span class="keyword">TO</span> 1.0 <span class="keyword">BY</span> 0.1;
+                contacts = <span class="keyword">ROUND</span>(max_contacts * allocation_pct);
+                
+                <span class="comment">/* Skip invalid allocations */</span>
+                <span class="keyword">IF</span> contacts <= 0 <span class="keyword">THEN</span> <span class="keyword">CONTINUE</span>;
+                
+                <span class="comment">/* Calculate expected results */</span>
+                cost = contacts * cost_per_contact;
+                responses = <span class="keyword">ROUND</span>(contacts * response_rate);
+                revenue = responses * segment_revenue;
+                profit = revenue - cost;
+                roi = <span class="keyword">DIVIDE</span>(profit, cost);
+                
+                <span class="comment">/* Track best combination */</span>
+                <span class="keyword">IF</span> roi > max_roi <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+                    max_roi = roi;
+                    best_segment = segment;
+                    best_channel = channel;
+                    best_allocation = allocation_pct * 100;
+                    best_contacts = contacts;
+                    best_cost = cost;
+                    best_responses = responses;
+                    best_revenue = revenue;
+                    best_profit = profit;
+                <span class="keyword">END</span>;
+                
+                <span class="comment">/* Output all scenarios */</span>
+                output;
+            <span class="keyword">END</span>;
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+    
+    <span class="keyword">FORMAT</span> cost best_cost dollar12. 
+            revenue best_revenue dollar12. 
+            profit best_profit dollar12. 
+            roi best_roi percent8.2
+            allocation_pct percent8.1 
+            response_rate percent8.2;
+            
+    <span class="keyword">KEEP</span> segment channel allocation_pct contacts cost responses revenue profit roi
+          best_segment best_channel best_allocation best_contacts best_cost 
+          best_responses best_revenue best_profit max_roi;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Output the optimal scenario */</span>
+<span class="keyword">DATA</span> optimal_strategy;
+    <span class="keyword">SET</span> customer_portfolio(<span class="keyword">OBS</span>=1);
+    <span class="keyword">KEEP</span> best_: max_roi;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=optimal_strategy;
+    <span class="keyword">TITLE</span> 'Optimal Marketing Strategy';
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* View all scenarios for the best segment-channel combination */</span>
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=customer_portfolio;
+    <span class="keyword">WHERE</span> segment = best_segment <span class="keyword">AND</span> channel = best_channel;
+    <span class="keyword">TITLE</span> 'Allocation Scenarios for Optimal Segment-Channel';
+    <span class="keyword">VAR</span> segment channel allocation_pct contacts cost responses revenue profit roi;
+<span class="keyword">RUN</span>;
+<span class="keyword">TITLE</span>;</pre>
+            
+            <p>This complex example demonstrates:</p>
+            <ul>
+                <li>Using nested loops to explore a multidimensional problem space</li>
+                <li>Applying business logic and constraints within loops</li>
+                <li>Calculating and tracking optimal solutions</li>
+                <li>Using flow control (CONTINUE) to skip invalid scenarios</li>
+                <li>Working with multidimensional arrays for parameter storage</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="data-step-views" class="section">
+        <h2>DATA Step Views</h2>
+        
+        <p>DATA step views are special SAS data objects that store the instructions to create a dataset rather than the data itself. They're useful for accessing large data sources efficiently and applying consistent transformations to data.</p>
+        
+        <div class="example-header">Example 18: Creating and using DATA step views</div>
+        <pre>
+<span class="comment">/* Create a sample dataset */</span>
+<span class="keyword">DATA</span> sales;
+    <span class="keyword">DO</span> year = 2021 <span class="keyword">TO</span> 2023;
+        <span class="keyword">DO</span> month = 1 <span class="keyword">TO</span> 12;
+            <span class="keyword">DO</span> region = 'North', 'South', 'East', 'West';
+                <span class="comment">/* Generate random sales data */</span>
+                sales_amount = <span class="keyword">ROUND</span>(<span class="keyword">RAND</span>('NORMAL', 50000, 10000));
+                date = <span class="keyword">MDY</span>(month, 15, year);
+                output;
+            <span class="keyword">END</span>;
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+    <span class="keyword">FORMAT</span> date date9. sales_amount dollar12.;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Create a DATA step view that filters and transforms the data */</span>
+<span class="keyword">DATA</span> sales_view / <span class="keyword">VIEW</span>=sales_view;
+    <span class="keyword">SET</span> sales;
+    
+    <span class="comment">/* Calculate derived fields */</span>
+    quarter = <span class="keyword">CEIL</span>(month / 3);
+    quarter_name = <span class="keyword">CATS</span>('Q', quarter, '-', year);
+    
+    <span class="comment">/* Apply sales adjustments based on region */</span>
+    <span class="keyword">SELECT</span>(region);
+        <span class="keyword">WHEN</span>('North') adjustment_factor = 1.02;
+        <span class="keyword">WHEN</span>('South') adjustment_factor = 0.98;
+        <span class="keyword">WHEN</span>('East')  adjustment_factor = 1.05;
+        <span class="keyword">WHEN</span>('West')  adjustment_factor = 0.97;
+        <span class="keyword">OTHERWISE</span> adjustment_factor = 1.0;
+    <span class="keyword">END</span>;
+    
+    adjusted_sales = sales_amount * adjustment_factor;
+    
+    <span class="comment">/* Filter for a specific time period */</span>
+    <span class="keyword">WHERE</span> year >= 2022;
+    
+    <span class="keyword">FORMAT</span> adjusted_sales dollar12.2 adjustment_factor percent7.2;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Use the view to generate a summary report */</span>
+<span class="keyword">PROC MEANS</span> <span class="keyword">DATA</span>=sales_view <span class="keyword">NOPRINT</span>;
+    <span class="keyword">CLASS</span> year quarter region;
+    <span class="keyword">VAR</span> adjusted_sales;
+    <span class="keyword">OUTPUT OUT</span>=quarterly_summary
+           <span class="keyword">SUM</span>=total_sales
+           <span class="keyword">MEAN</span>=avg_sales
+           <span class="keyword">MIN</span>=min_sales
+           <span class="keyword">MAX</span>=max_sales;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Format the summary report */</span>
+<span class="keyword">DATA</span> formatted_summary;
+    <span class="keyword">SET</span> quarterly_summary;
+    <span class="keyword">WHERE</span> _TYPE_ = 7;  <span class="comment">/* Only include observations with all class variables */</span>
+    quarter_label = <span class="keyword">CATS</span>('Q', quarter);
+    period = <span class="keyword">CATS</span>(quarter_label, ' ', year);
+    <span class
+DROP _TYPE_ _FREQ_ quarter;
+    FORMAT total_sales dollar14. avg_sales dollar12. min_sales dollar12. max_sales dollar12.;
+RUN;
+
+PROC PRINT DATA=formatted_summary;
+    TITLE 'Quarterly Sales Summary by Region (Using DATA Step View)';
+    BY year quarter_label;
+    ID region;
+    VAR total_sales avg_sales min_sales max_sales;
+RUN;
+TITLE;
+
+/* Create another view for identifying top-performing regions */
+DATA top_regions_view / VIEW=top_regions_view;
+    SET sales;
+    
+    /* Create fiscal year (July-June) */
+    IF month >= 7 THEN fiscal_year = year + 1;
+    ELSE fiscal_year = year;
+    
+    /* Calculate monthly metrics */
+    FORMAT fiscal_year z4.;
+    
+    /* Only include complete fiscal years */
+    WHERE (year = 2021 AND month >= 7) OR 
+          (year = 2022) OR 
+          (year = 2023 AND month <= 6);
+RUN;
+
+/* Use the view to find top regions by fiscal year */
+PROC MEANS DATA=top_regions_view NOPRINT;
+    CLASS fiscal_year region;
+    VAR sales_amount;
+    OUTPUT OUT=region_ranking SUM=annual_sales;
+RUN;
+
+/* Rank regions within each fiscal year */
+PROC RANK DATA=region_ranking OUT=ranked_regions DESCENDING;
+    BY fiscal_year;
+    VAR annual_sales;
+    RANKS sales_rank;
+    WHERE _TYPE_ = 3;  /* Only include fiscal_year and region combinations */
+RUN;
+
+/* Format the ranking report */
+DATA region_performance;
+    SET ranked_regions;
+    sales_rank = sales_rank + 1;  /* Convert to 1-based ranking */
+    FORMAT annual_sales dollar16.;
+    DROP _TYPE_ _FREQ_;
+RUN;
+
+PROC PRINT DATA=region_performance;
+    TITLE 'Region Performance Ranking by Fiscal Year';
+    BY fiscal_year;
+    ID region;
+    VAR annual_sales sales_rank;
+RUN;
+TITLE;
+
+/* Demonstrate updating a view definition */
+DATA sales_view / VIEW=sales_view;
+    SET sales;
+    
+    /* Calculate derived fields */
+    quarter = CEIL(month / 3);
+    quarter_name = CATS('Q', quarter, '-', year);
+    
+    /* Updated adjustment factors based on new analysis */
+    SELECT(region);
+        WHEN('North') adjustment_factor = 1.04;  /* Increased from 1.02 */
+        WHEN('South') adjustment_factor = 0.97;  /* Decreased from 0.98 */
+        WHEN('East')  adjustment_factor = 1.06;  /* Increased from 1.05 */
+        WHEN('West')  adjustment_factor = 0.95;  /* Decreased from 0.97 */
+        OTHERWISE adjustment_factor = 1.0;
+    END;
+    
+    adjusted_sales = sales_amount * adjustment_factor;
+    
+    /* Remove filter to include all years */
+    /* WHERE year >= 2022; -- Removed */
+    
+    FORMAT adjusted_sales dollar12.2 adjustment_factor percent7.2;
+RUN;
+
+/* Use the updated view to generate a new summary */
+PROC MEANS DATA=sales_view NOPRINT;
+    CLASS year region;
+    VAR adjusted_sales;
+    OUTPUT OUT=yearly_summary
+           SUM=total_sales;
+RUN;
+
+DATA yearly_summary_fmt;
+    SET yearly_summary;
+    WHERE _TYPE_ = 3;  /* Only include year and region combinations */
+    DROP _TYPE_ _FREQ_;
+    FORMAT total_sales dollar14.;
+RUN;
+
+PROC PRINT DATA=yearly_summary_fmt;
+    TITLE 'Yearly Sales Summary by Region (Using Updated DATA Step View)';
+    BY year;
+    ID region;
+    VAR total_sales;
+RUN;
+TITLE;
+/******************************************/
+/* EFFICIENCY OPTIMIZATION TECHNIQUES     */
+/******************************************/
+
+/* Example 19: Efficient conditional processing with indexes */
+DATA customer_large;
+    /* Create a large customer dataset */
+    DO customer_id = 1 TO 500000;
+        /* Randomly assign customer characteristics */
+        state = SCAN('CA,NY,TX,FL,IL,PA,OH,GA,NC,MI', CEIL(RANUNI(0)*10), ',');
+        age = ROUND(18 + RANUNI(0) * 70);
+        income = ROUND(25000 + (RANUNI(0) * 150000));
+        active_flag = (RANUNI(0) > 0.2);  /* 80% of customers are active */
+        join_date = MDY(CEIL(RANUNI(0)*12), CEIL(RANUNI(0)*28), 2010 + CEIL(RANUNI(0)*10));
+        
+        OUTPUT;
+    END;
+    FORMAT join_date date9. income dollar14. active_flag 1.;
+RUN;
+
+/* Create an index on the large table for efficient lookups */
+PROC DATASETS LIBRARY=WORK NOLIST;
+    MODIFY customer_large;
+    INDEX CREATE state;
+    INDEX CREATE customer_id;
+RUN;
+QUIT;
+
+/* Create a small transactions dataset */
+DATA transactions;
+    DO transaction_id = 1 TO 10000;
+        customer_id = CEIL(RANUNI(0) * 500000);  /* Random customer from the large set */
+        transaction_date = TODAY() - CEIL(RANUNI(0) * 365);
+        transaction_amount = ROUND(RANUNI(0) * 500, 0.01);
+        OUTPUT;
+    END;
+    FORMAT transaction_date date9. transaction_amount dollar12.2;
+RUN;
+
+/* Create a target customer list - a subset of customers to analyze */
+DATA target_customers;
+    DO customer_id = 1 TO 500000 BY 173;  /* Sample approximately 2,890 customers */
+        OUTPUT;
+    END;
+RUN;
+
+/* Inefficient approach - merging the full dataset */
+DATA merged_inefficient;
+    MERGE target_customers(IN=in_target)
+          customer_large
+          transactions;
+    BY customer_id;
+    
+    IF in_target;
+RUN;
+
+/* More efficient approach - using a WHERE statement with indexed access */
+DATA merged_efficient;
+    SET target_customers;
+    
+    /* Lookup customer data using index */
+    DO _lookup = 1 TO 1;
+        SET customer_large(WHERE=(customer_id=customer_large.customer_id)) KEY=customer_id;
+    END;
+    
+    /* Find all customer transactions */
+    DO i = 1 TO 10000;
+        SET transactions(WHERE=(customer_id=customer_id)) KEY=customer_id NOBS=num_transactions;
+        IF _IORC_ = 0 THEN DO;
+            OUTPUT;
+        END;
+        ELSE DO;
+            _ERROR_ = 0;
+            LEAVE;
+        END;
+    END;
+    
+    DROP _lookup _IORC_ i;
+RUN;
+
+/* Example 20: Optimizing code with FIRSTOBS and OBS data set options */
+DATA subset_data;
+    SET customer_large(FIRSTOBS=10000 OBS=20000);  /* Only process 10,000 observations */
+RUN;
+
+/* Example 21: Using the WHERE= data set option for efficient filtering */
+DATA california_customers;
+    SET customer_large(WHERE=(state='CA'));
+RUN;
+
+/* Example 22: Optimizing memory usage with COMPRESS= option */
+OPTIONS COMPRESS=YES;  /* Enable compression for all subsequently created datasets */
+
+DATA customer_compressed;
+    SET customer_large;
+RUN;
+
+OPTIONS COMPRESS=NO;  /* Turn off compression */
+
+/* Example 23: Using buffers to optimize I/O operations */
+DATA customer_buffers;
+    SET customer_large(BUFNO=10);  /* Allocate 10 buffers for input */
+RUN;
+
+/* Example 24: Using KEEP= and DROP= for efficient data management */
+DATA customer_reduced;
+    SET customer_large(KEEP=customer_id state age income);  /* Only read needed variables */
+    
+    /* Further process only customers meeting certain criteria */
+    WHERE age BETWEEN 25 AND 45 AND income > 50000;
+RUN;
+
+/******************************************/
+/* MACRO INTEGRATION WITH DATA STEP       */
+/******************************************/
+
+/* Example 25: Creating a parameterized reporting macro */
+%MACRO generate_sales_report(start_date=, end_date=, region=, level=);
+    /* Validate parameters */
+    %IF &start_date= %THEN %DO;
+        %PUT ERROR: start_date parameter is required.;
+        %RETURN;
+    %END;
+    
+    %IF &end_date= %THEN %DO;
+        %LET end_date = %SYSFUNC(TODAY(), date9.);
+        %PUT NOTE: end_date not specified, using current date (&end_date);
+    %END;
+    
+    /* Create title based on parameters */
+    %LET report_title = Sales Report for Period &start_date to &end_date;
+    %IF &region NE %THEN %LET report_title = &report_title for Region &region;
+    
+    /* Define the level of detail */
+    %LET by_vars = year;
+    %IF &level = MONTH %THEN %LET by_vars = year month;
+    %ELSE %IF &level = QUARTER %THEN %LET by_vars = year quarter;
+    
+    /* Convert date parameters to SAS date values */
+    DATA _NULL_;
+        start_dt = INPUT("&start_date", date9.);
+        end_dt = INPUT("&end_date", date9.);
+        CALL SYMPUTX('start_dt', start_dt);
+        CALL SYMPUTX('end_dt', end_dt);
+    RUN;
+    
+    /* Generate the report */
+    PROC SQL;
+        /* Apply conditional WHERE clause based on parameters */
+        CREATE TABLE sales_report AS
+        SELECT 
+            year, 
+            %IF &level = MONTH %THEN %DO;
+                month,
+            %END;
+            %IF &level = QUARTER OR &level = MONTH %THEN %DO;
+                CEIL(month/3) AS quarter,
+            %END;
+            %IF &region NE %THEN %DO;
+                region,
+            %END;
+            SUM(sales_amount) AS total_sales,
+            COUNT(*) AS transaction_count,
+            AVG(sales_amount) AS avg_sale
+        FROM sales
+        WHERE date BETWEEN &start_dt AND &end_dt
+            %IF &region NE %THEN %DO;
+                AND region = "&region"
+            %END;
+        GROUP BY 
+            year
+            %IF &level = MONTH %THEN %DO;
+                , month
+            %END;
+            %IF &level = QUARTER OR &level = MONTH %THEN %DO;
+                , calculated quarter
+            %END;
+            %IF &region NE %THEN %DO;
+                , region
+            %END;
+        ORDER BY 
+            year
+            %IF &level = MONTH %THEN %DO;
+                , month
+            %END;
+            %IF &level = QUARTER OR &level = MONTH %THEN %DO;
+                , calculated quarter
+            %END;
+            %IF &region NE %THEN %DO;
+                , region
+            %END;
+        ;
+    QUIT;
+    
+    /* Format the results for display */
+    DATA sales_report_formatted;
+        SET sales_report;
+        
+        /* Create period label based on detail level */
+        %IF &level = MONTH %THEN %DO;
+            period = PUT(MDY(month, 1, year), MONYY7.);
+        %END;
+        %ELSE %IF &level = QUARTER %THEN %DO;
+            period = CATS('Q', quarter, ' ', year);
+        %END;
+        %ELSE %DO;
+            period = PUT(year, 4.);
+        %END;
+        
+        FORMAT total_sales dollar14.2 avg_sale dollar12.2;
+    RUN;
+    
+    /* Generate the report */
+    PROC PRINT DATA=sales_report_formatted LABEL;
+        TITLE "&report_title";
+        LABEL 
+            total_sales = "Total Sales"
+            transaction_count = "Number of Transactions"
+            avg_sale = "Average Sale Amount"
+            period = "Time Period";
+            
+        %IF &level = MONTH %THEN %DO;
+            BY year quarter;
+            ID period;
+        %END;
+        %ELSE %IF &level = QUARTER %THEN %DO;
+            BY year;
+            ID period;
+        %END;
+        %ELSE %DO;
+            ID period;
+        %END;
+        
+        VAR total_sales transaction_count avg_sale;
+    RUN;
+    TITLE;
+%MEND generate_sales_report;
+
+/* Example calls to the report macro */
+%generate_sales_report(start_date=01JAN2022, end_date=31DEC2022, level=YEAR)
+%generate_sales_report(start_date=01JAN2022, end_date=31DEC2022, level=QUARTER, region=North)
+%generate_sales_report(start_date=01JAN2022, end_date=31DEC2022, level=MONTH, region=East)
+
+/* Example 26: Creating a dynamic data transformation macro */
+%MACRO transform_dataset(input_ds=, output_ds=, transform_type=STANDARDIZE, vars=);
+    %LET valid_transform = 1;
+    
+    /* Validate the input dataset exists */
+    %IF %SYSFUNC(EXIST(&input_ds)) EQ 0 %THEN %DO;
+        %PUT ERROR: Input dataset &input_ds does not exist.;
+        %RETURN;
+    %END;
+    
+    /* Get variable information if vars parameter is not provided */
+    %IF &vars= %THEN %DO;
+        PROC CONTENTS DATA=&input_ds OUT=_contents_ NOPRINT;
+        RUN;
+        
+        DATA _NULL_;
+            SET _contents_ END=last;
+            WHERE TYPE = 1;  /* Numeric variables only */
+            LENGTH var_list $1000;
+            RETAIN var_list;
+            
+            /* Build variable list */
+            IF _N_ = 1 THEN var_list = NAME;
+            ELSE var_list = CATX(' ', var_list, NAME);
+            
+            IF last THEN CALL SYMPUTX('vars', var_list);
+        RUN;
+        
+        %PUT NOTE: No variables specified. Using numeric variables: &vars;
+    %END;
+    
+    /* Perform the requested transformation */
+    %IF %UPCASE(&transform_type) = STANDARDIZE %THEN %DO;
+        /* Standardize variables (Z-score) */
+        PROC STDIZE DATA=&input_ds OUT=&output_ds METHOD=STD;
+            VAR &vars;
+        RUN;
+        
+        %PUT NOTE: Variables &vars have been standardized.;
+    %END;
+    %ELSE %IF %UPCASE(&transform_type) = NORMALIZE %THEN %DO;
+        /* Normalize variables to [0,1] range */
+        PROC STDIZE DATA=&input_ds OUT=&output_ds METHOD=RANGE;
+            VAR &vars;
+        RUN;
+        
+        %PUT NOTE: Variables &vars have been normalized to [0,1] range.;
+    %END;
+    %ELSE %IF %UPCASE(&transform_type) = LOG %THEN %DO;
+        /* Log transform variables */
+        DATA &output_ds;
+            SET &input_ds;
+            
+            /* Process each variable in the list */
+            %LET var_count = %SYSFUNC(COUNTW(&vars));
+            %DO i = 1 %TO &var_count;
+                %LET var = %SCAN(&vars, &i);
+                
+                /* Check if variable is positive before log transform */
+                IF MIN(OF &var) <= 0 THEN DO;
+                    /* Add a small constant to handle zeros/negatives */
+                    LOG_&var = LOG(&var + 1);
+                END;
+                ELSE DO;
+                    LOG_&var = LOG(&var);
+                END;
+            %END;
+        RUN;
+        
+        %PUT NOTE: Log transformation applied to variables &vars.;
+    %END;
+    %ELSE %IF %UPCASE(&transform_type) = RANK %THEN %DO;
+        /* Rank transform variables */
+        PROC RANK DATA=&input_ds OUT=&output_ds;
+            VAR &vars;
+            RANKS %DO i = 1 %TO %SYSFUNC(COUNTW(&vars));
+                    RANK_%SCAN(&vars, &i)
+                  %END;;
+        RUN;
+        
+        %PUT NOTE: Rank transformation applied to variables &vars.;
+    %END;
+    %ELSE %DO;
+        %PUT ERROR: Invalid transformation type specified: &transform_type;
+        %PUT ERROR: Valid options are: STANDARDIZE, NORMALIZE, LOG, RANK;
+        %LET valid_transform = 0;
+    %END;
+    
+    /* Generate summary statistics of transformed data */
+    %IF &valid_transform = 1 %THEN %DO;
+        PROC MEANS DATA=&output_ds MIN MEAN MEDIAN MAX STD;
+            VAR 
+            %IF %UPCASE(&transform_type) = LOG %THEN %DO;
+                %LET var_count = %SYSFUNC(COUNTW(&vars));
+                %DO i = 1 %TO &var_count;
+                    LOG_%SCAN(&vars, &i)
+                %END;
+            %END;
+            %ELSE %IF %UPCASE(&transform_type) = RANK %THEN %DO;
+                %LET var_count = %SYSFUNC(COUNTW(&vars));
+                %DO i = 1 %TO &var_count;
+                    RANK_%SCAN(&vars, &i)
+                %END;
+            %END;
+            %ELSE %DO;
+                &vars
+            %END;
+            ;
+            TITLE "Summary Statistics for Transformed Variables (&transform_type)";
+        RUN;
+        TITLE;
+    %END;
+%MEND transform_dataset;
+
+/* Example calls to the transformation macro */
+%transform_dataset(input_ds=customer_large, output_ds=customer_std, transform_type=STANDARDIZE, vars=age income)
+%transform_dataset(input_ds=customer_large, output_ds=customer_norm, transform_type=NORMALIZE)
+%transform_dataset(input_ds=customer_large, output_ds=customer_log, transform_type=LOG, vars=income)
+
+/******************************************/
+/* PUTTING IT ALL TOGETHER: CASE STUDY    */
+/******************************************/
+
+/* Case Study: Advanced Customer Analytics Pipeline */
+
+/* Step 1: Create a data preparation macro */
+%MACRO prepare_customer_data(input_ds=, output_ds=, filter_inactive=YES, sample_size=);
+    /* Validate input dataset */
+    %IF %SYSFUNC(EXIST(&input_ds)) EQ 0 %THEN %DO;
+        %PUT ERROR: Input dataset &input_ds does not exist.;
+        %RETURN;
+    %END;
+    
+    /* Create a DATA step view for customer data preparation */
+    DATA customer_prep_view / VIEW=customer_prep_view;
+        SET &input_ds;
+        
+        /* Perform data cleaning and feature engineering */
+        
+        /* Fix missing values */
+        IF MISSING(age) THEN age = 40;  /* Impute with reasonable value */
+        IF MISSING(income) THEN income = 50000;
+        
+        /* Create derived features */
+        customer_tenure_days = TODAY() - join_date;
+        customer_tenure_years = customer_tenure_days / 365.25;
+        
+        /* Create customer segments based on income */
+        IF income < 35000 THEN income_segment = 'Low';
+        ELSE IF income < 75000 THEN income_segment = 'Middle';
+        ELSE IF income < 125000 THEN income_segment = 'Upper Middle';
+        ELSE income_segment = 'High';
+        
+        /* Create age groups */
+        IF age < 25 THEN age_group = 'Under 25';
+        ELSE IF age < 35 THEN age_group = '25-34';
+        ELSE IF age < 45 THEN age_group = '35-44';
+        ELSE IF age < 55 THEN age_group = '45-54';
+        ELSE IF age < 65 THEN age_group = '55-64';
+        ELSE age_group = '65+';
+        
+        /* Filter inactive customers if requested */
+        %IF %UPCASE(&filter_inactive) = YES %THEN %DO;
+            WHERE active_flag = 1;
+        %END;
+        
+        FORMAT customer_tenure_years 5.1;
+    RUN;
+    
+    /* Apply sampling if requested */
+    %IF &sample_size NE %THEN %DO;
+        PROC SURVEYSELECT DATA=customer_prep_view 
+                          OUT=&output_ds
+                          METHOD=SRS
+                          SAMPSIZE=&sample_size;
+        RUN;
+        
+        %PUT NOTE: Random sample of &sample_size observations selected from &input_ds.;
+    %END;
+    %ELSE %DO;
+        /* Create the final output dataset */
+        DATA &output_ds;
+            SET customer_prep_view;
+        RUN;
+    %END;
+    
+    /* Generate a summary report */
+    PROC MEANS DATA=&output_ds N NMISS MEAN MEDIAN MIN MAX;
+        VAR age income customer_tenure_years;
+        TITLE "Summary Statistics for Prepared Customer Data";
+    RUN;
+    
+    PROC FREQ DATA=&output_ds;
+        TABLES state income_segment age_group;
+        TITLE "Distribution of Key Customer Attributes";
+    RUN;
+    TITLE;
+%MEND prepare_customer_data;
+
+/* Step 2: Create an analysis macro */
+%MACRO analyze_customer_segments(input_ds=, output_prefix=segment_analysis);
+    /* Validate input dataset */
+    %IF %SYSFUNC(EXIST(&input_ds)) EQ 0 %THEN %DO;
+        %PUT ERROR: Input dataset &input_ds does not exist.;
+        %RETURN;
+    %END;
+    
+    /* Create a hash table to store segment statistics */
+    DATA &output_prefix._summary;
+        /* Declare hash object for segment statistics */
+        IF _N_ = 1 THEN DO;
+            DECLARE HASH segment_stats(ordered: 'A');
+            segment_stats.defineKey('segment_id');
+            segment_stats.defineData('segment_id', 'segment_label', 'customer_count', 
+                                   'avg_income', 'avg_age', 'avg_tenure');
+            segment_stats.defineDone();
+        END;
+        
+        /* Process the input dataset */
+        SET &input_ds END=eof;
+        
+        /* Create a combined segment ID */
+        segment_id = CATX('_', income_segment, age_group);
+        segment_label = CATX(' - ', income_segment, age_group);
+        
+        /* Check if segment exists in hash */
+        rc = segment_stats.find();
+        
+        IF rc = 0 THEN DO;
+            /* Update existing segment statistics */
+            customer_count + 1;
+            avg_income = ((avg_income * (customer_count - 1)) + income) / customer_count;
+            avg_age = ((avg_age * (customer_count - 1)) + age) / customer_count;
+            avg_tenure = ((avg_tenure * (customer_count - 1)) + customer_tenure_years) / customer_count;
+            
+            /* Replace the record in the hash */
+            rc = segment_stats.replace();
+        END;
+        ELSE DO;
+            /* Initialize new segment statistics */
+            customer_count = 1;
+            avg_income = income;
+            avg_age = age;
+            avg_tenure = customer_tenure_years;
+            
+            /* Add the new segment to the hash */
+            rc = segment_stats.add();
+        END;
+        
+        /* Output all segments when processing is complete */
+        IF eof THEN DO;
+            /* Create iterator for the hash */
+            DECLARE HITER segment_iter('segment_stats');
+            
+            /* Iterate through segments and output results */
+            DO WHILE(segment_iter.next() = 0);
+                OUTPUT;
+            END;
+        END;
+        
+        /* Keep only summary variables */
+        KEEP segment_id segment_label customer_count avg_income avg_age avg_tenure;
+        FORMAT avg_income dollar14.2 avg_age 5.1 avg_tenure 5.1;
+    RUN;
+    
+    /* Sort segments by customer count */
+    PROC SORT DATA=&output_prefix._summary;
+        BY DESCENDING customer_count;
+    RUN;
+    
+    /* Add segment percentage */
+    DATA &output_prefix._summary;
+        SET &output_prefix._summary;
+        
+        /* Calculate total customers */
+        IF _N_ = 1 THEN DO;
+            total_customers = SUM(OF customer_count);
+            CALL SYMPUTX('total_customers', total_customers);
+        END;
+        
+        /* Calculate percentage */
+        segment_pct = (customer_count / &total_customers) * 100;
+        
+        FORMAT segment_pct 5.1;
+    RUN;
+    
+    /* Generate segment-specific datasets */
+    DATA _NULL_;
+        SET &input_ds;
+        
+        /* Create a combined segment ID */
+        segment_id = CATX('_', income_segment, age_group);
+        
+        /* Create a dataset name */
+        dataset_name = CATS("&output_prefix._", segment_id);
+        
+        /* Clean up dataset name for SAS compatibility */
+        dataset_name = TRANSLATE(dataset_name, '_', '-');
+        dataset_name = TRANSLATE(dataset_name, '_', '+');
+        
+        /* Store the segment dataset name in a macro variable */
+        CALL SYMPUTX('segment_' || _N_, dataset_name);
+        CALL SYMPUTX('segment_count', _N_);
+    RUN;
+    
+    /* Create segment-specific datasets */
+    %DO i = 1 %TO &segment_count;
+        DATA &&segment_&i;
+            SET &input_ds(WHERE=(CATX('_', income_segment, age_group) = "&&segment_&i"));
+        RUN;
+    %END;
+    
+    /* Print summary report */
+    PROC PRINT DATA=&output_prefix._summary;
+        TITLE "Customer Segment Analysis Summary";
+        ID segment_label;
+        VAR customer_count segment_pct avg_income avg_age avg_tenure;
+    RUN;
+    TITLE;
+%MEND analyze_customer_segments;
+
+/* Step 3: Create a visualization macro (pseudocode - would use PROC SGPLOT in practice) */
+%MACRO visualize_segments(input_ds=, output_file=segment_viz);
+    /* Generate segment visualization */
+    ODS GRAPHICS ON / IMAGENAME="&output_file" IMAGEFMT=PNG HEIGHT=8in WIDTH=10in;
+    
+    /* Create bubble chart of segments */
+    PROC SGPLOT DATA=&input_ds;
+        BUBBLE X=avg_age Y=avg_income SIZE=customer_count / 
+               DATALABEL=segment_label TRANSPARENCY=0.3;
+        XAXIS LABEL="Average Age";
+        YAXIS LABEL="Average Income" GRID;
+        TITLE "Customer Segment Analysis - Size Represents Segment Population";
+    RUN;
+    
+    /* Create horizontal bar chart of segment sizes */
+    PROC SGPLOT DATA=&input_ds;
+        HBAR segment_label / RESPONSE=customer_count 
+                            CATEGORYORDER=RESPDESC;
+        XAXIS LABEL="Number of Customers";
+        YAXIS DISPLAY=(NOLABEL);
+        TITLE "Customer Segment Sizes";
+    RUN;
+    
+    ODS GRAPHICS OFF;
+%MEND visualize_segments;
+
+/* Execute the full pipeline */
+%prepare_customer_data(input_ds=customer_large, output_ds=customer_prepared, filter_inactive=YES, sample_size=50000)
+%analyze_customer_segments(input_ds=customer_prepared, output_prefix=customer_segment)
+%visualize_segments(input_ds=customer_segment_summary, output_file=segment_analysis)
+
+/* Generate final report */
+ODS PDF FILE="customer_analysis_report.pdf" STYLE=JOURNAL;
+
+TITLE "Customer Segment Analysis Report";
+TITLE2 "Generated %SYSFUNC(DATETIME(), DATETIME.)";
+FOOTNOTE "Confidential - Internal Use Only";
+
+PROC PRINT DATA=customer_segment_summary;
+    ID segment_label;
+    VAR customer_count segment_pct avg_income avg_age avg_tenure;
+RUN;
+
+/* Additional analysis can be added here */
+
+ODS PDF CLOSE;
+/******************************************/
+/* ERROR HANDLING AND DEBUGGING           */
+/******************************************/
+
+/* Example 27: Advanced error handling with _ERROR_ and ABORT statements */
+DATA error_handling_demo;
+    /* Create a temporary table with test data */
+    INPUT id value;
+    DATALINES;
+1 100
+2 200
+3 300
+4 abc
+5 500
+;
+RUN;
+
+/* Simple error handling */
+DATA error_handling;
+    SET error_handling_demo;
+    
+    /* Attempt to perform calculation with character value */
+    result = value * 2;
+    
+    /* Check if an error occurred and handle it */
+    IF _ERROR_ THEN DO;
+        PUT "ERROR: Invalid data encountered at observation " _N_;
+        PUT "ID = " id;
+        PUT "VALUE = " value;
+        
+        /* Reset the error flag */
+        _ERROR_ = 0;
+        
+        /* Set default value and continue */
+        result = 0;
+    END;
+RUN;
+
+/* Advanced error handling with custom error tracking */
+DATA error_handling_advanced;
+    /* Initialize error tracking variables */
+    LENGTH error_msg $200;
+    RETAIN error_count 0 error_msg "";
+    
+    SET error_handling_demo END=eof;
+    
+    /* Try to validate and process data */
+    valid_data = 1;  /* Assume data is valid */
+    
+    /* Check for invalid numeric value */
+    IF NOT VERIFY(STRIP(value), '0123456789.') = 0 THEN DO;
+        valid_data = 0;
+        error_count + 1;
+        error_msg = CATX('; ', error_msg, 
+                        CATS("Row ", _N_, ": Non-numeric value in VALUE column: ", value));
+    END;
+    
+    /* Only process valid data */
+    IF valid_data THEN DO;
+        result = INPUT(value, 8.) * 2;
+        output;
+    END;
+    
+    /* Output error summary at end of processing */
+    IF eof AND error_count > 0 THEN DO;
+        PUT "PROCESSING COMPLETED WITH ERRORS:";
+        PUT "Total records with errors: " error_count;
+        PUT "Error details: " error_msg;
+    END;
+    
+    DROP error_msg valid_data;
+RUN;
+
+/* Using ABORT statement for critical errors */
+DATA critical_error_demo;
+    SET error_handling_demo;
+    
+    /* Check for critical condition */
+    IF id = 3 THEN DO;
+        PUT "ERROR: Critical condition detected at ID=" id;
+        ABORT CANCEL;  /* Stops processing and doesn't create the output dataset */
+    END;
+    
+    result = INPUT(value, 8.) * 2;
+RUN;
+
+/* Example 28: Using RESOLVE function for dynamic code generation */
+DA
