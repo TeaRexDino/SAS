@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beginner's Guide to SAS Programming</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 40px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        h3 {
+            color: #3498db;
+            margin-top: 25px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            line-height: 1.4;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .comment {
+            color: green;
+        }
+        .keyword {
+            color: #0000ff;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .note {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .example-header {
+            font-weight: bold;
+            margin-top: 20px;
+            color: #555;
+        }
+        .toc {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #2980b9;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        @media print {
+            body {
+                font-size: 12pt;
+            }
+            pre {
+                white-space: pre-wrap;
+                page-break-inside: avoid;
+                background-color: #f8f8f8 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .toc {
+                page-break-after: always;
+            }
+            h2, h3 {
+                page-break-after: avoid;
+            }
+            .no-break {
+                page-break-inside: avoid;
+            }
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .print-only {
+            display: none;
+        }
+        @media print {
+            button {
+                display: none;
+            }
+            .print-only {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.print();">Print / Export to PDF</button>
+    
+    <h1>Beginner's Guide to SAS Programming</h1>
+    
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#introduction">Introduction to SAS</a></li>
+            <li><a href="#data-step">The DATA Step</a>
+                <ul>
+                    <li><a href="#data-basics">Basic Data Step Structure</a></li>
+                    <li><a href="#merging">Merging Data</a></li>
+                    <li><a href="#loops">Loop Statements</a></li>
+                </ul>
+            </li>
+            <li><a href="#proc-sql">PROC SQL</a>
+                <ul>
+                    <li><a href="#basic-queries">Basic Queries</a></li>
+                    <li><a href="#joins">Joining Tables</a></li>
+                    <li><a href="#subqueries">Subqueries and Complex Queries</a></li>
+                </ul>
+            </li>
+            <li><a href="#macro">Macro Variables and Functions</a>
+                <ul>
+                    <li><a href="#macro-basics">Basic Macro Concepts</a></li>
+                    <li><a href="#macro-variables">Working with Macro Variables</a></li>
+                    <li><a href="#macro-functions">Creating Macro Functions</a></li>
+                </ul>
+            </li>
+            <li><a href="#functions">Common SAS Functions</a>
+                <ul>
+                    <li><a href="#string-functions">String Functions</a></li>
+                    <li><a href="#date-functions">Date and Time Functions</a></li>
+                    <li><a href="#numeric-functions">Numeric Functions</a></li>
+                </ul>
+            </li>
+            <li><a href="#conclusion">Conclusion and Next Steps</a></li>
+        </ul>
+    </div>
+
+    <div id="introduction" class="section">
+        <h2>Introduction to SAS</h2>
+        <p>SAS (Statistical Analysis System) is a powerful software suite used for advanced analytics, business intelligence, data management, and predictive analytics. Developed by SAS Institute, it's widely used in research, healthcare, finance, and many other industries.</p>
+        
+        <p>SAS programs typically consist of:</p>
+        <ul>
+            <li><strong>DATA Steps</strong> - For data manipulation and transformation</li>
+            <li><strong>PROC Steps</strong> - For procedures to analyze and report on data</li>
+            <li><strong>Macros</strong> - For creating reusable code and automating tasks</li>
+        </ul>
+        
+        <div class="note">
+            <p>This guide assumes you have access to SAS software and understand basic programming concepts. We'll be focusing on practical examples to help you get started quickly.</p>
+        </div>
+    </div>
+
+    <div id="data-step" class="section">
+        <h2>The DATA Step</h2>
+        
+        <p>The DATA step is the cornerstone of SAS programming. It allows you to create and modify SAS datasets, and is used to transform data in various ways.</p>
+        
+        <div id="data-basics" class="no-break">
+            <h3>Basic DATA Step Structure</h3>
+            <p>A basic DATA step begins with the DATA statement and ends with a RUN statement:</p>
+            
+            <div class="example-header">Example 1: Creating a simple dataset</div>
+            <pre>
+<span class="comment">/* Creating a simple dataset with student information */</span>
+<span class="keyword">DATA</span> students;
+    <span class="comment">/* Input statement defines the variables */</span>
+    <span class="keyword">INPUT</span> name $ age grade;
+    
+    <span class="comment">/* Calculating a new variable */</span>
+    gpa = grade / 10;
+    
+    <span class="comment">/* DATALINES statement followed by actual data */</span>
+    <span class="keyword">DATALINES</span>;
+John 15 95
+Sarah 16 89
+Michael 15 78
+Emily 16 92
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Viewing the dataset */</span>
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=students;
+<span class="keyword">RUN</span>;</pre>
+            
+            <p>In this example:</p>
+            <ul>
+                <li>We create a dataset named "students"</li>
+                <li>Define three variables: name (character, as indicated by $), age, and grade (numeric)</li>
+                <li>Calculate a new variable (gpa) based on the grade</li>
+                <li>Provide the actual data after the DATALINES statement</li>
+                <li>Finally, use PROC PRINT to display the dataset</li>
+            </ul>
+        </div>
+        
+        <div id="merging" class="no-break">
+            <h3>Merging Data</h3>
+            <p>Combining datasets is a common task in SAS. The MERGE statement allows you to join datasets based on common variables.</p>
+            
+            <div class="example-header">Example 2: Merging two datasets</div>
+            <pre>
+<span class="comment">/* Creating the first dataset with student IDs and names */</span>
+<span class="keyword">DATA</span> student_info;
+    <span class="keyword">INPUT</span> student_id name $;
+    <span class="keyword">DATALINES</span>;
+101 John
+102 Sarah
+103 Michael
+104 Emily
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Creating the second dataset with student IDs and test scores */</span>
+<span class="keyword">DATA</span> test_scores;
+    <span class="keyword">INPUT</span> student_id test_score;
+    <span class="keyword">DATALINES</span>;
+101 85
+102 92
+103 78
+105 90
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Merging the two datasets by student_id */</span>
+<span class="keyword">DATA</span> student_results;
+    <span class="comment">/* Must sort datasets before merging */</span>
+    <span class="keyword">MERGE</span> student_info test_scores;
+    <span class="comment">/* BY statement specifies the common variable */</span>
+    <span class="keyword">BY</span> student_id;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Viewing the merged dataset */</span>
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=student_results;
+<span class="keyword">RUN</span>;</pre>
+            
+            <div class="note">
+                <p><strong>Important:</strong> Before merging, both datasets must be sorted by the common variable(s). In a real scenario, you would need to include PROC SORT steps:</p>
+                <pre>
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=student_info;
+    <span class="keyword">BY</span> student_id;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC SORT</span> <span class="keyword">DATA</span>=test_scores;
+    <span class="keyword">BY</span> student_id;
+<span class="keyword">RUN</span>;</pre>
+            </div>
+            
+            <p>The result will combine data from both datasets. Notice that:</p>
+            <ul>
+                <li>Student ID 105 will appear but with a missing name (since it wasn't in the first dataset)</li>
+                <li>All student IDs from both datasets are included (this is a "full outer join")</li>
+            </ul>
+        </div>
+        
+        <div id="loops" class="no-break">
+            <h3>Loop Statements</h3>
+            <p>SAS provides several ways to create loops for repetitive tasks:</p>
+            
+            <div class="example-header">Example 3: DO loop for calculation</div>
+            <pre>
+<span class="comment">/* Calculating compound interest using a DO loop */</span>
+<span class="keyword">DATA</span> investment;
+    <span class="comment">/* Initial investment of $1000 with 5% annual interest */</span>
+    principal = 1000;
+    rate = 0.05;
+    
+    <span class="comment">/* Loop from year 1 to 10 */</span>
+    <span class="keyword">DO</span> year = 1 <span class="keyword">TO</span> 10;
+        <span class="comment">/* Calculate new balance with interest */</span>
+        principal = principal * (1 + rate);
+        
+        <span class="comment">/* Output each year as a separate observation */</span>
+        <span class="keyword">OUTPUT</span>;
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Format the principal as currency */</span>
+    <span class="keyword">FORMAT</span> principal dollar10.2;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* View the results */</span>
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=investment;
+<span class="keyword">RUN</span>;</pre>
+            
+            <p>This example:</p>
+            <ul>
+                <li>Creates a dataset showing the growth of an investment over 10 years</li>
+                <li>Uses a DO loop to iterate through each year</li>
+                <li>Calculates the new principal with compounded interest</li>
+                <li>Outputs each year as a separate observation in the dataset</li>
+            </ul>
+            
+            <div class="example-header">Example 4: DO WHILE loop</div>
+            <pre>
+<span class="comment">/* Using DO WHILE to find how many years until investment doubles */</span>
+<span class="keyword">DATA</span> double_investment;
+    principal = 1000;
+    target = principal * 2;
+    current = principal;
+    rate = 0.05;
+    year = 0;
+    
+    <span class="comment">/* Continue until current value reaches or exceeds target */</span>
+    <span class="keyword">DO WHILE</span>(current < target);
+        year = year + 1;
+        current = current * (1 + rate);
+        <span class="keyword">OUTPUT</span>;
+    <span class="keyword">END</span>;
+    
+    <span class="keyword">FORMAT</span> current dollar10.2;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=double_investment;
+<span class="keyword">RUN</span>;</pre>
+        </div>
+    </div>
+
+    <div id="proc-sql" class="section">
+        <h2>PROC SQL</h2>
+        
+        <p>PROC SQL combines the power of SAS with the flexibility of SQL (Structured Query Language). It's excellent for data manipulation, joining tables, and creating summarized reports.</p>
+        
+        <div id="basic-queries" class="no-break">
+            <h3>Basic Queries</h3>
+            
+            <div class="example-header">Example 5: Simple SELECT query</div>
+            <pre>
+<span class="comment">/* First, create a sample dataset */</span>
+<span class="keyword">DATA</span> employees;
+    <span class="keyword">INPUT</span> id name $ department $ salary;
+    <span class="keyword">DATALINES</span>;
+1 John IT 75000
+2 Sarah HR 65000
+3 Michael IT 85000
+4 Emily Finance 70000
+5 David Marketing 68000
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* Basic SELECT query */</span>
+<span class="keyword">PROC SQL</span>;
+    <span class="comment">/* Select specific columns */</span>
+    <span class="keyword">SELECT</span> name, department, salary
+    <span class="keyword">FROM</span> employees
+    <span class="comment">/* Filter for employees in IT department */</span>
+    <span class="keyword">WHERE</span> department = 'IT'
+    <span class="comment">/* Order by salary in descending order */</span>
+    <span class="keyword">ORDER BY</span> salary <span class="keyword">DESC</span>;
+<span class="keyword">QUIT</span>;</pre>
+            
+            <p>This query:</p>
+            <ul>
+                <li>Selects only the name, department, and salary columns</li>
+                <li>Filters to show only IT department employees</li>
+                <li>Orders the results by salary from highest to lowest</li>
+            </ul>
+            
+            <div class="example-header">Example 6: Aggregating data</div>
+            <pre>
+<span class="comment">/* Using GROUP BY and aggregate functions */</span>
+<span class="keyword">PROC SQL</span>;
+    <span class="keyword">SELECT</span> department, 
+           <span class="keyword">COUNT</span>(*) as num_employees,
+           <span class="keyword">AVG</span>(salary) as avg_salary,
+           <span class="keyword">MIN</span>(salary) as min_salary,
+           <span class="keyword">MAX</span>(salary) as max_salary
+    <span class="keyword">FROM</span> employees
+    <span class="keyword">GROUP BY</span> department
+    <span class="keyword">ORDER BY</span> avg_salary <span class="keyword">DESC</span>;
+<span class="keyword">QUIT</span>;</pre>
+            
+            <p>This example:</p>
+            <ul>
+                <li>Groups employees by department</li>
+                <li>Calculates the count, average, minimum, and maximum salary for each department</li>
+                <li>Orders the results by the average salary</li>
+            </ul>
+        </div>
+        
+        <div id="joins" class="no-break">
+            <h3>Joining Tables</h3>
+            
+            <div class="example-header">Example 7: INNER JOIN</div>
+            <pre>
+<span class="comment">/* Creating additional datasets for join examples */</span>
+<span class="keyword">DATA</span> departments;
+    <span class="keyword">INPUT</span> dept_id $ dept_name $ location $;
+    <span class="keyword">DATALINES</span>;
+IT Information_Technology Building_A
+HR Human_Resources Building_B
+FIN Finance Building_A
+MKT Marketing Building_C
+;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">DATA</span> employees2;
+    <span class="keyword">INPUT</span> emp_id name $ dept_id $ salary;
+    <span class="keyword">DATALINES</span>;
+1 John IT 75000
+2 Sarah HR 65000
+3 Michael IT 85000
+4 Emily FIN 70000
+5 David MKT 68000
+6 Lisa HR 72000
+;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* INNER JOIN example */</span>
+<span class="keyword">PROC SQL</span>;
+    <span class="keyword">SELECT</span> e.name, e.salary, d.dept_name, d.location
+    <span class="keyword">FROM</span> employees2 as e
+    <span class="keyword">INNER JOIN</span> departments as d
+    <span class="keyword">ON</span> e.dept_id = d.dept_id
+    <span class="keyword">ORDER BY</span> e.name;
+<span class="keyword">QUIT</span>;</pre>
+            
+            <p>This SQL join:</p>
+            <ul>
+                <li>Combines employee information with department details</li>
+                <li>Uses table aliases (e for employees2, d for departments) for clarity</li>
+                <li>Matches records based on the common dept_id field</li>
+                <li>Only includes records where a match exists in both tables (inner join)</li>
+            </ul>
+            
+            <div class="example-header">Example 8: LEFT JOIN</div>
+            <pre>
+<span class="comment">/* First, add an employee with no matching department */</span>
+<span class="keyword">DATA</span> temp;
+    emp_id = 7;
+    name = 'Robert';
+    dept_id = 'RD';  <span class="comment">/* This department doesn't exist in departments table */</span>
+    salary = 80000;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">DATA</span> employees2;
+    <span class="keyword">SET</span> employees2 temp;
+<span class="keyword">RUN</span>;
+
+<span class="comment">/* LEFT JOIN keeps all employees even if no department match */</span>
+<span class="keyword">PROC SQL</span>;
+    <span class="keyword">SELECT</span> e.name, e.dept_id, e.salary, d.dept_name, d.location
+    <span class="keyword">FROM</span> employees2 as e
+    <span class="keyword">LEFT JOIN</span> departments as d
+    <span class="keyword">ON</span> e.dept_id = d.dept_id
+    <span class="keyword">ORDER BY</span> e.name;
+<span class="keyword">QUIT</span>;</pre>
+            
+            <p>With a LEFT JOIN:</p>
+            <ul>
+                <li>All records from the employees2 table are included</li>
+                <li>For Robert with dept_id 'RD', the department fields will be null (since no match exists)</li>
+                <li>This is useful when you want to preserve all records from your "left" table</li>
+            </ul>
+        </div>
+        
+        <div id="subqueries" class="no-break">
+            <h3>Subqueries and Complex Queries</h3>
+            
+            <div class="example-header">Example 9: Using a subquery</div>
+            <pre>
+<span class="comment">/* Find employees who earn more than their department's average */</span>
+<span class="keyword">PROC SQL</span>;
+    <span class="keyword">SELECT</span> e1.name, e1.dept_id, e1.salary
+    <span class="keyword">FROM</span> employees2 as e1
+    <span class="keyword">WHERE</span> e1.salary > (
+        <span class="keyword">SELECT</span> <span class="keyword">AVG</span>(e2.salary)
+        <span class="keyword">FROM</span> employees2 as e2
+        <span class="keyword">WHERE</span> e1.dept_id = e2.dept_id
+    )
+    <span class="keyword">ORDER BY</span> e1.dept_id, e1.salary <span class="keyword">DESC</span>;
+<span class="keyword">QUIT</span>;</pre>
+            
+            <p>This advanced example:</p>
+            <ul>
+                <li>Uses a correlated subquery that references the outer query</li>
+                <li>For each employee, calculates their department's average salary</li>
+                <li>Shows only employees who earn above that average</li>
+            </ul>
+            
+            <div class="example-header">Example 10: Creating a table with PROC SQL</div>
+            <pre>
+<span class="comment">/* Create a summary table with PROC SQL */</span>
+<span class="keyword">PROC SQL</span>;
+    <span class="comment">/* Create a new table called dept_summary */</span>
+    <span class="keyword">CREATE TABLE</span> dept_summary <span class="keyword">AS</span>
+    <span class="keyword">SELECT</span> d.dept_name, d.location,
+           <span class="keyword">COUNT</span>(e.emp_id) as num_employees,
+           <span class="keyword">AVG</span>(e.salary) as avg_salary <span class="keyword">FORMAT</span>=dollar10.2,
+           <span class="keyword">MIN</span>(e.salary) as min_salary <span class="keyword">FORMAT</span>=dollar10.2,
+           <span class="keyword">MAX</span>(e.salary) as max_salary <span class="keyword">FORMAT</span>=dollar10.2
+    <span class="keyword">FROM</span> departments as d
+    <span class="keyword">LEFT JOIN</span> employees2 as e
+    <span class="keyword">ON</span> d.dept_id = e.dept_id
+    <span class="keyword">GROUP BY</span> d.dept_name, d.location;
+    
+    <span class="comment">/* View the new table */</span>
+    <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> dept_summary;
+<span class="keyword">QUIT</span>;</pre>
+            
+            <p>This example:</p>
+            <ul>
+                <li>Creates a new SAS dataset using SQL</li>
+                <li>Summarizes employee data by department</li>
+                <li>Uses LEFT JOIN to include all departments, even those with no employees</li>
+                <li>Applies formatting to salary fields</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="macro" class="section">
+        <h2>Macro Variables and Functions</h2>
+        
+        <p>SAS macros allow you to create reusable, dynamic code. They're useful for automating repetitive tasks and making your programs more flexible.</p>
+        
+        <div id="macro-basics" class="no-break">
+            <h3>Basic Macro Concepts</h3>
+            
+            <div class="example-header">Example 11: Using macro variables</div>
+            <pre>
+<span class="comment">/* Defining and using macro variables */</span>
+<span class="keyword">%LET</span> department = IT;
+<span class="keyword">%LET</span> min_salary = 70000;
+
+<span class="comment">/* Using the macro variables in a PROC SQL step */</span>
+<span class="keyword">PROC SQL</span>;
+    <span class="keyword">SELECT</span> name, dept_id, salary
+    <span class="keyword">FROM</span> employees2
+    <span class="comment">/* Use &department to reference the macro variable */</span>
+    <span class="keyword">WHERE</span> dept_id = "&department" <span class="keyword">AND</span> salary >= &min_salary;
+<span class="keyword">QUIT</span>;</pre>
+            
+            <p>In this example:</p>
+            <ul>
+                <li>We define two macro variables: department and min_salary</li>
+                <li>Reference these variables in the SQL query using the & prefix</li>
+                <li>The query finds IT employees who earn at least $70,000</li>
+            </ul>
+        </div>
+        
+        <div id="macro-variables" class="no-break">
+            <h3>Working with Macro Variables</h3>
+            
+            <div class="example-header">Example 12: Creating macro variables from data</div>
+            <pre>
+<span class="comment">/* Creating macro variables from query results */</span>
+<span class="keyword">PROC SQL</span> <span class="keyword">NOPRINT</span>;
+    <span class="comment">/* Store the average IT salary in a macro variable */</span>
+    <span class="keyword">SELECT</span> <span class="keyword">AVG</span>(salary) <span class="keyword">INTO</span> :avg_it_salary
+    <span class="keyword">FROM</span> employees2
+    <span class="keyword">WHERE</span> dept_id = 'IT';
+<span class="keyword">QUIT</span>;
+
+<span class="comment">/* Use the calculated value in a data step */</span>
+<span class="keyword">DATA</span> it_comparison;
+    <span class="keyword">SET</span> employees2;
+    avg_it_salary = &avg_it_salary;
+    salary_diff = salary - avg_it_salary;
+    <span class="keyword">FORMAT</span> avg_it_salary salary_diff dollar10.2;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=it_comparison;
+<span class="keyword">RUN</span>;</pre>
+            
+            <p>This code:</p>
+            <ul>
+                <li>Uses SQL to calculate the average salary for IT employees</li>
+                <li>Stores this value in a macro variable using the INTO clause</li>
+                <li>Uses the value in a subsequent DATA step to compare individual salaries to the average</li>
+            </ul>
+            
+            <div class="example-header">Example 13: Creating multiple macro variables</div>
+            <pre>
+<span class="comment">/* Creating a series of macro variables */</span>
+<span class="keyword">PROC SQL</span> <span class="keyword">NOPRINT</span>;
+    <span class="comment">/* Get a list of all department IDs */</span>
+    <span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> dept_id 
+    <span class="keyword">INTO</span> :dept1-:dept999  <span class="comment">/* Creates dept1, dept2, etc. */</span>
+    <span class="keyword">FROM</span> employees2;
+    
+    <span class="comment">/* Store the count in another macro variable */</span>
+    <span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(<span class="keyword">DISTINCT</span> dept_id) 
+    <span class="keyword">INTO</span> :dept_count
+    <span class="keyword">FROM</span> employees2;
+<span class="keyword">QUIT</span>;
+
+<span class="comment">/* Display the values using %PUT statements */</span>
+<span class="keyword">%PUT</span> Number of departments: &dept_count;
+<span class="keyword">%PUT</span> Department list:;
+
+<span class="comment">/* Loop through the departments using a macro do loop */</span>
+<span class="keyword">%MACRO</span> list_depts;
+    <span class="keyword">%DO</span> i = 1 <span class="keyword">%TO</span> &dept_count;
+        <span class="keyword">%PUT</span> Department &i: &&dept&i;
+    <span class="keyword">%END</span>;
+<span class="keyword">%MEND</span> list_depts;
+
+<span class="keyword">%list_depts</span></pre>
+            
+            <p>This advanced example:</p>
+            <ul>
+                <li>Creates numbered macro variables (dept1, dept2, etc.) for each unique department</li>
+                <li>Stores the count of departments in dept_count</li>
+                <li>Defines a macro that loops through the departments</li>
+                <li>Uses double ampersands (&&) for indirect referencing (resolving dept&i to the actual variable name)</li>
+            </ul>
+        </div>
+        
+        <div id="macro-functions" class="no-break">
+            <h3>Creating Macro Functions</h3>
+            
+            <div class="example-header">Example 14: Simple macro function</div>
+            <pre>
+<span class="comment">/* Creating a macro function to run a department report */</span>
+<span class="keyword">%MACRO</span> dept_report(dept_code, title=Department Report);
+    <span class="comment">/* Check if department parameter was provided */</span>
+    <span class="keyword">%IF</span> &dept_code = <span class="keyword">%THEN</span> <span class="keyword">%DO</span>;
+        <span class="keyword">%PUT</span> ERROR: Department code is required;
+        <span class="keyword">%RETURN</span>;
+    <span class="keyword">%END</span>;
+    
+    <span class="keyword">TITLE</span> "&title for &dept_code Department";
+    
+    <span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=employees2;
+        <span class="keyword">WHERE</span> dept_id = "&dept_code";
+    <span class="key
+<span class="keyword">RUN</span>;
+    
+    <span class="comment">/* Create a summary report */</span>
+    <span class="keyword">PROC MEANS</span> <span class="keyword">DATA</span>=employees2 <span class="keyword">MEAN</span> <span class="keyword">MIN</span> <span class="keyword">MAX</span>;
+        <span class="keyword">WHERE</span> dept_id = "&dept_code";
+        <span class="keyword">VAR</span> salary;
+    <span class="keyword">RUN</span>;
+    
+    <span class="keyword">TITLE</span>; <span class="comment">/* Reset the title */</span>
+<span class="keyword">%MEND</span> dept_report;
+
+<span class="comment">/* Calling the macro function for the IT department */</span>
+<span class="keyword">%dept_report</span>(IT, title=Information Technology Report)
+
+<span class="comment">/* Calling the macro for the HR department */</span>
+<span class="keyword">%dept_report</span>(HR)</pre>
+            
+            <p>This macro function:</p>
+            <ul>
+                <li>Takes two parameters: a required dept_code and an optional title</li>
+                <li>Includes error checking to ensure dept_code is provided</li>
+                <li>Generates two reports for the specified department</li>
+                <li>Can be called multiple times for different departments</li>
+            </ul>
+            
+            <div class="example-header">Example 15: Advanced macro with conditional logic</div>
+            <pre>
+<span class="comment">/* Creating a more complex macro with conditional processing */</span>
+<span class="keyword">%MACRO</span> analyze_data(dataset, var, statistic=MEAN, filter=);
+    <span class="comment">/* Check if dataset exists */</span>
+    <span class="keyword">%IF</span> %sysfunc(exist(&dataset)) = 0 <span class="keyword">%THEN</span> <span class="keyword">%DO</span>;
+        <span class="keyword">%PUT</span> ERROR: Dataset &dataset does not exist;
+        <span class="keyword">%RETURN</span>;
+    <span class="keyword">%END</span>;
+    
+    <span class="comment">/* Different processing based on requested statistic */</span>
+    <span class="keyword">%IF</span> %upcase(&statistic) = MEAN <span class="keyword">%THEN</span> <span class="keyword">%DO</span>;
+        <span class="keyword">PROC MEANS</span> <span class="keyword">DATA</span>=&dataset <span class="keyword">MEAN</span>;
+            <span class="keyword">VAR</span> &var;
+            <span class="keyword">%IF</span> &filter ^= <span class="keyword">%THEN</span> <span class="keyword">%DO</span>;
+                <span class="keyword">WHERE</span> &filter;
+            <span class="keyword">%END</span>;
+        <span class="keyword">RUN</span>;
+    <span class="keyword">%END</span>;
+    <span class="keyword">%ELSE</span> <span class="keyword">%IF</span> %upcase(&statistic) = FREQ <span class="keyword">%THEN</span> <span class="keyword">%DO</span>;
+        <span class="keyword">PROC FREQ</span> <span class="keyword">DATA</span>=&dataset;
+            <span class="keyword">TABLES</span> &var;
+            <span class="keyword">%IF</span> &filter ^= <span class="keyword">%THEN</span> <span class="keyword">%DO</span>;
+                <span class="keyword">WHERE</span> &filter;
+            <span class="keyword">%END</span>;
+        <span class="keyword">RUN</span>;
+    <span class="keyword">%END</span>;
+    <span class="keyword">%ELSE</span> <span class="keyword">%IF</span> %upcase(&statistic) = PLOT <span class="keyword">%THEN</span> <span class="keyword">%DO</span>;
+        <span class="keyword">PROC SGPLOT</span> <span class="keyword">DATA</span>=&dataset;
+            <span class="keyword">HISTOGRAM</span> &var;
+            <span class="keyword">%IF</span> &filter ^= <span class="keyword">%THEN</span> <span class="keyword">%DO</span>;
+                <span class="keyword">WHERE</span> &filter;
+            <span class="keyword">%END</span>;
+        <span class="keyword">RUN</span>;
+    <span class="keyword">%END</span>;
+    <span class="keyword">%ELSE</span> <span class="keyword">%DO</span>;
+        <span class="keyword">%PUT</span> ERROR: Invalid statistic. Use MEAN, FREQ, or PLOT;
+    <span class="keyword">%END</span>;
+<span class="keyword">%MEND</span> analyze_data;
+
+<span class="comment">/* Calling the macro with different parameters */</span>
+<span class="keyword">%analyze_data</span>(employees2, salary)
+<span class="keyword">%analyze_data</span>(employees2, dept_id, statistic=FREQ)
+<span class="keyword">%analyze_data</span>(employees2, salary, statistic=PLOT, filter=dept_id='IT')</pre>
+            
+            <p>This advanced macro example:</p>
+            <ul>
+                <li>Uses %sysfunc to call the EXIST function, checking if the dataset exists</li>
+                <li>Has different processing paths based on the requested statistic</li>
+                <li>Includes an optional filter parameter</li>
+                <li>Uses %upcase to make parameter checking case-insensitive</li>
+                <li>Shows how to handle optional WHERE clauses conditionally</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="functions" class="section">
+        <h2>Common SAS Functions</h2>
+        
+        <p>SAS provides hundreds of built-in functions for handling various data manipulation tasks. Here are some of the most commonly used ones:</p>
+        
+        <div id="string-functions" class="no-break">
+            <h3>String Functions</h3>
+            
+            <div class="example-header">Example 16: Basic string functions</div>
+            <pre>
+<span class="keyword">DATA</span> string_examples;
+    <span class="comment">/* Sample text to manipulate */</span>
+    original = "  SAS Programming Guide  ";
+    
+    <span class="comment">/* UPCASE - Convert to uppercase */</span>
+    upper_text = <span class="keyword">UPCASE</span>(original);
+    
+    <span class="comment">/* LOWCASE - Convert to lowercase */</span>
+    lower_text = <span class="keyword">LOWCASE</span>(original);
+    
+    <span class="comment">/* PROPCASE - Capitalize first letter of each word */</span>
+    proper_text = <span class="keyword">PROPCASE</span>(original);
+    
+    <span class="comment">/* TRIM - Remove trailing blanks */</span>
+    trimmed = <span class="keyword">TRIM</span>(original);
+    
+    <span class="comment">/* STRIP - Remove leading and trailing blanks */</span>
+    stripped = <span class="keyword">STRIP</span>(original);
+    
+    <span class="comment">/* LENGTH - Get the length of a string */</span>
+    orig_length = <span class="keyword">LENGTH</span>(original);
+    strip_length = <span class="keyword">LENGTH</span>(stripped);
+    
+    <span class="comment">/* SUBSTR - Extract part of a string */</span>
+    sub_text = <span class="keyword">SUBSTR</span>(stripped, 1, 3);  <span class="comment">/* Get first 3 characters */</span>
+    
+    <span class="comment">/* FIND - Find position of a substring */</span>
+    prog_pos = <span class="keyword">FIND</span>(original, "Program");
+    
+    <span class="comment">/* TRANWRD - Replace text */</span>
+    new_text = <span class="keyword">TRANWRD</span>(original, "Guide", "Tutorial");
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=string_examples;
+<span class="keyword">RUN</span>;</pre>
+            
+            <div class="example-header">Example 17: Advanced string manipulation</div>
+            <pre>
+<span class="keyword">DATA</span> name_parsing;
+    <span class="comment">/* Sample names to parse */</span>
+    <span class="keyword">INPUT</span> full_name $50.;
+    
+    <span class="comment">/* SCAN - Extract words from a string */</span>
+    first_name = <span class="keyword">SCAN</span>(full_name, 1, ' ');  <span class="comment">/* First word */</span>
+    last_name = <span class="keyword">SCAN</span>(full_name, -1, ' ');  <span class="comment">/* Last word (negative index counts from end) */</span>
+    
+    <span class="comment">/* FINDW - Find a word within a string */</span>
+    middle_initial_pos = <span class="keyword">FINDW</span>(full_name, ".", ' ');
+    has_middle_initial = <span class="keyword">IFC</span>(middle_initial_pos > 0, 'Yes', 'No');
+    
+    <span class="comment">/* CATX - Concatenate with a separator */</span>
+    name_formatted = <span class="keyword">CATX</span>(', ', last_name, first_name);
+    
+    <span class="keyword">DATALINES</span>;
+John A. Smith
+Mary Elizabeth Johnson
+Robert Lee
+James T. Kirk
+;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=name_parsing;
+<span class="keyword">RUN</span>;</pre>
+        </div>
+        
+        <div id="date-functions" class="no-break">
+            <h3>Date and Time Functions</h3>
+            
+            <div class="example-header">Example 18: Working with dates</div>
+            <pre>
+<span class="keyword">DATA</span> date_examples;
+    <span class="comment">/* Current date and time */</span>
+    today = <span class="keyword">TODAY</span>();
+    current_time = <span class="keyword">TIME</span>();
+    current_datetime = <span class="keyword">DATETIME</span>();
+    
+    <span class="comment">/* Creating dates from components */</span>
+    birthday = <span class="keyword">MDY</span>(6, 15, 1990);  <span class="comment">/* June 15, 1990 */</span>
+    
+    <span class="comment">/* Extracting components from dates */</span>
+    current_month = <span class="keyword">MONTH</span>(today);
+    current_year = <span class="keyword">YEAR</span>(today);
+    current_day = <span class="keyword">DAY</span>(today);
+    weekday_num = <span class="keyword">WEEKDAY</span>(today);
+    
+    <span class="comment">/* Date arithmetic */</span>
+    tomorrow = today + 1;
+    last_week = today - 7;
+    age_in_years = <span class="keyword">YRDIF</span>(birthday, today, 'AGE');
+    
+    <span class="comment">/* INTNX - Advance a date by a specified interval */</span>
+    next_month_start = <span class="keyword">INTNX</span>('MONTH', today, 1, 'B');  <span class="comment">/* Beginning of next month */</span>
+    this_month_end = <span class="keyword">INTNX</span>('MONTH', today, 0, 'E');    <span class="comment">/* End of current month */</span>
+    
+    <span class="comment">/* INTCK - Count intervals between dates */</span>
+    months_until_yearend = <span class="keyword">INTCK</span>('MONTH', today, <span class="keyword">MDY</span>(12, 31, <span class="keyword">YEAR</span>(today)));
+    
+    <span class="comment">/* Formatting dates for display */</span>
+    <span class="keyword">FORMAT</span> today birthday tomorrow last_week next_month_start this_month_end date9.;
+    <span class="keyword">FORMAT</span> current_time time8.;
+    <span class="keyword">FORMAT</span> current_datetime datetime20.;
+    <span class="keyword">FORMAT</span> age_in_years 5.1;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=date_examples;
+<span class="keyword">RUN</span>;</pre>
+            
+            <div class="example-header">Example 19: Date ranges and calculations</div>
+            <pre>
+<span class="comment">/* Create a dataset with date ranges */</span>
+<span class="keyword">DATA</span> project_timeline;
+    <span class="keyword">INPUT</span> project_id project_name $ start_date date9. end_date date9.;
+    
+    <span class="comment">/* Calculate duration in days */</span>
+    duration_days = end_date - start_date + 1;
+    
+    <span class="comment">/* Calculate work days (excluding weekends) */</span>
+    workdays = duration_days - (<span class="keyword">INTCK</span>('WEEK', start_date, end_date) * 2);
+    
+    <span class="comment">/* Adjust for partial weeks */</span>
+    <span class="keyword">IF</span> <span class="keyword">WEEKDAY</span>(end_date) < <span class="keyword">WEEKDAY</span>(start_date) <span class="keyword">THEN</span> workdays = workdays - 2;
+    
+    <span class="comment">/* Check if project is completed */</span>
+    is_completed = <span class="keyword">IFC</span>(end_date < <span class="keyword">TODAY</span>(), 'Yes', 'No');
+    
+    <span class="keyword">FORMAT</span> start_date end_date date9.;
+    <span class="keyword">DATALINES</span>;
+101 Website 01JAN2023 15MAR2023
+102 Database 10FEB2023 30APR2023
+103 Mobile_App 01MAR2023 31JUL2023
+104 Analytics 15APR2023 31DEC2023
+;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=project_timeline;
+<span class="keyword">RUN</span>;</pre>
+        </div>
+        
+        <div id="numeric-functions" class="no-break">
+            <h3>Numeric Functions</h3>
+            
+            <div class="example-header">Example 20: Basic numeric functions</div>
+            <pre>
+<span class="keyword">DATA</span> numeric_examples;
+    <span class="comment">/* Input data */</span>
+    x = 7.25;
+    y = -3.75;
+    z = 0;
+    
+    <span class="comment">/* Rounding functions */</span>
+    rounded = <span class="keyword">ROUND</span>(x, 0.1);     <span class="comment">/* Round to nearest 0.1 */</span>
+    rounded_down = <span class="keyword">FLOOR</span>(x);     <span class="comment">/* Round down to integer */</span>
+    rounded_up = <span class="keyword">CEIL</span>(x);        <span class="comment">/* Round up to integer */</span>
+    integer_part = <span class="keyword">INT</span>(x);       <span class="comment">/* Integer portion */</span>
+    
+    <span class="comment">/* Basic math */</span>
+    absolute_value = <span class="keyword">ABS</span>(y);     <span class="comment">/* Absolute value */</span>
+    square_root = <span class="keyword">SQRT</span>(x);       <span class="comment">/* Square root */</span>
+    power = x ** 2;                <span class="comment">/* X squared */</span>
+    power_alt = <span class="keyword">POW</span>(x, 2);       <span class="comment">/* X squared (alternative) */</span>
+    log_value = <span class="keyword">LOG</span>(x);          <span class="comment">/* Natural logarithm */</span>
+    log10_value = <span class="keyword">LOG10</span>(x);      <span class="comment">/* Base 10 logarithm */</span>
+    exp_value = <span class="keyword">EXP</span>(1);          <span class="comment">/* e^1 (Euler's number) */</span>
+    
+    <span class="comment">/* Random numbers */</span>
+    random_uniform = <span class="keyword">RANUNI</span>(123); <span class="comment">/* Uniform random between 0 and 1 */</span>
+    random_normal = <span class="keyword">RANNOR</span>(456);  <span class="comment">/* Normal random with mean 0, std 1 */</span>
+    
+    <span class="comment">/* Trigonometric functions (input in radians) */</span>
+    pi = <span class="keyword">CONSTANT</span>('PI');        <span class="comment">/* PI constant */</span>
+    sin_value = <span class="keyword">SIN</span>(pi/4);       <span class="comment">/* Sine of 45 degrees */</span>
+    cos_value = <span class="keyword">COS</span>(pi/4);       <span class="comment">/* Cosine of 45 degrees */</span>
+    
+    <span class="comment">/* Missing value handling */</span>
+    missing_test = z / 0;          <span class="comment">/* Creates a missing value */</span>
+    is_missing = <span class="keyword">MISSING</span>(missing_test);  <span class="comment">/* Checks for missing */</span>
+    
+    <span class="keyword">FORMAT</span> random_uniform random_normal sin_value cos_value 6.4;
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=numeric_examples;
+<span class="keyword">RUN</span>;</pre>
+            
+            <div class="example-header">Example 21: Statistical functions</div>
+            <pre>
+<span class="keyword">DATA</span> statistics;
+    <span class="comment">/* Sample data points */</span>
+    <span class="keyword">ARRAY</span> values[5] (10, 15, 12, 8, 20);
+    
+    <span class="comment">/* Basic statistics */</span>
+    min_val = <span class="keyword">MIN</span>(OF values[*]);
+    max_val = <span class="keyword">MAX</span>(OF values[*]);
+    range = max_val - min_val;
+    
+    sum_val = <span class="keyword">SUM</span>(OF values[*]);
+    mean_val = <span class="keyword">MEAN</span>(OF values[*]);
+    
+    <span class="comment">/* Calculating standard deviation manually */</span>
+    sum_squares = 0;
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> 5;
+        sum_squares = sum_squares + ((values[i] - mean_val) ** 2);
+    <span class="keyword">END</span>;
+    variance = sum_squares / 5;
+    std_dev = <span class="keyword">SQRT</span>(variance);
+    
+    <span class="comment">/* Using built-in functions */</span>
+    std_dev_func = <span class="keyword">STD</span>(OF values[*]);
+    var_func = <span class="keyword">VAR</span>(OF values[*]);
+    
+    <span class="comment">/* Median (requires sorting) */</span>
+    <span class="keyword">ARRAY</span> sorted[5];
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> 5;
+        sorted[i] = values[i];
+    <span class="keyword">END</span>;
+    
+    <span class="comment">/* Simple bubble sort */</span>
+    <span class="keyword">DO</span> i = 1 <span class="keyword">TO</span> 4;
+        <span class="keyword">DO</span> j = 1 <span class="keyword">TO</span> 5-i;
+            <span class="keyword">IF</span> sorted[j] > sorted[j+1] <span class="keyword">THEN</span> <span class="keyword">DO</span>;
+                temp = sorted[j];
+                sorted[j] = sorted[j+1];
+                sorted[j+1] = temp;
+            <span class="keyword">END</span>;
+        <span class="keyword">END</span>;
+    <span class="keyword">END</span>;
+    
+    median = sorted[3];  <span class="comment">/* For 5 elements, median is the 3rd element when sorted */</span>
+<span class="keyword">RUN</span>;
+
+<span class="keyword">PROC PRINT</span> <span class="keyword">DATA</span>=statistics;
+    <span class="keyword">VAR</span> min_val max_val range sum_val mean_val std_dev std_dev_func median;
+<span class="keyword">RUN</span>;</pre>
+        </div>
+    </div>
+
+    <div id="conclusion" class="section">
+        <h2>Conclusion and Next Steps</h2>
+        
+        <p>Congratulations! You've now learned the fundamental concepts of SAS programming, including:</p>
+        
+        <ul>
+            <li>Creating and manipulating data with DATA steps</li>
+            <li>Merging datasets and using loops</li>
+            <li>Querying and manipulating data with PROC SQL</li>
+            <li>Creating and using macros for code reusability</li>
+            <li>Working with common SAS functions for strings, dates, and numbers</li>
+        </ul>
+        
+        <h3>Where to Go From Here</h3>
+        
+        <p>To continue developing your SAS skills, consider exploring these topics:</p>
+        
+        <ul>
+            <li><strong>Advanced DATA step programming</strong> - Arrays, hash objects, and DO loops</li>
+            <li><strong>Statistical procedures</strong> - PROC MEANS, PROC UNIVARIATE, PROC REG, etc.</li>
+            <li><strong>SAS/GRAPH and ODS Graphics</strong> - Creating visualizations</li>
+            <li><strong>SAS Enterprise Guide</strong> - The point-and-click interface for SAS</li>
+            <li><strong>SAS Macro programming</strong> - Building complex, reusable macro systems</li>
+            <li><strong>SAS/IML</strong> - Matrix programming for advanced statistical analysis</li>
+        </ul>
+        
+        <div class="note">
+            <p>Remember, the key to mastering SAS is practice. Try modifying the examples in this guide, combining techniques, and working on your own projects. SAS provides extensive documentation online, including procedure guides and examples that can help you solve specific problems.</p>
+        </div>
+        
+        <p>Good luck with your SAS programming journey!</p>
+    </div>
+    
+    <div class="print-only">
+        <p style="text-align: center; margin-top: 40px;">Beginner's Guide to SAS Programming</p>
+    </div>
+</body>
+</html>
