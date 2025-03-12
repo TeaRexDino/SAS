@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAS Data Formats Reference Chart</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        td {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Print-specific styling */
+        @media print {
+            body {
+                padding: 0;
+                font-size: 12pt;
+            }
+            
+            h1 {
+                font-size: 18pt;
+                margin-bottom: 20px;
+            }
+            
+            h2 {
+                font-size: 14pt;
+                margin-top: 20px;
+                page-break-after: avoid;
+            }
+            
+            table {
+                font-size: 10pt;
+            }
+            
+            .pagebreak {
+                page-break-before: always;
+            }
+            
+            @page {
+                margin: 0.5in;
+            }
+        }
+        
+        /* Notes section */
+        .notes {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        
+        .notes h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <h1>SAS Data Formats Reference Chart</h1>
+    
+    <h2>Numeric Formats</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th>Description</th>
+                <th>Example</th>
+                <th>Output</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>w.d</code></td>
+                <td>Standard numeric</td>
+                <td><code>10.2</code></td>
+                <td><code>123.45</code></td>
+            </tr>
+            <tr>
+                <td><code>COMMAw.d</code></td>
+                <td>Adds commas</td>
+                <td><code>COMMA10.2</code></td>
+                <td><code>1,234.56</code></td>
+            </tr>
+            <tr>
+                <td><code>DOLLARw.d</code></td>
+                <td>Adds dollar sign</td>
+                <td><code>DOLLAR10.2</code></td>
+                <td><code>$1,234.56</code></td>
+            </tr>
+            <tr>
+                <td><code>EUROf.d</code></td>
+                <td>Adds euro symbol</td>
+                <td><code>EURO10.2</code></td>
+                <td><code>€1,234.56</code></td>
+            </tr>
+            <tr>
+                <td><code>PERCENTw.d</code></td>
+                <td>Displays as percentage</td>
+                <td><code>PERCENT8.2</code></td>
+                <td><code>12.34%</code></td>
+            </tr>
+            <tr>
+                <td><code>NEGPARENw.d</code></td>
+                <td>Negative values in parentheses</td>
+                <td><code>NEGPAREN8.2</code></td>
+                <td><code>(123.45)</code></td>
+            </tr>
+            <tr>
+                <td><code>BESTw.</code></td>
+                <td>Best representation</td>
+                <td><code>BEST8.</code></td>
+                <td><code>1234.56</code></td>
+            </tr>
+            <tr>
+                <td><code>Ew.</code></td>
+                <td>Scientific notation</td>
+                <td><code>E10.</code></td>
+                <td><code>1.23E+03</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Date and Time Formats</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th>Description</th>
+                <th>Example</th>
+                <th>Output</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>DATEw.</code></td>
+                <td>Date values (DD-MMM-YY)</td>
+                <td><code>DATE9.</code></td>
+                <td><code>01JAN2023</code></td>
+            </tr>
+            <tr>
+                <td><code>DDMMYYw.</code></td>
+                <td>Date in DDMMYY order</td>
+                <td><code>DDMMYY10.</code></td>
+                <td><code>01/01/2023</code></td>
+            </tr>
+            <tr>
+                <td><code>MMDDYYw.</code></td>
+                <td>Date in MMDDYY order</td>
+                <td><code>MMDDYY10.</code></td>
+                <td><code>01/01/2023</code></td>
+            </tr>
+            <tr>
+                <td><code>YYMMDDw.</code></td>
+                <td>Date in YYMMDD order</td>
+                <td><code>YYMMDD10.</code></td>
+                <td><code>2023/01/01</code></td>
+            </tr>
+            <tr>
+                <td><code>DTDATEw.</code></td>
+                <td>Datetime as date</td>
+                <td><code>DTDATE9.</code></td>
+                <td><code>01JAN2023</code></td>
+            </tr>
+            <tr>
+                <td><code>TIMEw.</code></td>
+                <td>Time (HH:MM:SS)</td>
+                <td><code>TIME8.</code></td>
+                <td><code>12:30:45</code></td>
+            </tr>
+            <tr>
+                <td><code>DATETIMEw.</code></td>
+                <td>Date and time</td>
+                <td><code>DATETIME20.</code></td>
+                <td><code>01JAN2023:12:30:45</code></td>
+            </tr>
+            <tr>
+                <td><code>WEEKDATEw.</code></td>
+                <td>Weekday and date</td>
+                <td><code>WEEKDATE25.</code></td>
+                <td><code>Sunday, January 1, 2023</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Character Formats</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th>Description</th>
+                <th>Example</th>
+                <th>Output</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>$w.</code></td>
+                <td>Standard character</td>
+                <td><code>$10.</code></td>
+                <td><code>Text      </code></td>
+            </tr>
+            <tr>
+                <td><code>$UPCASEw.</code></td>
+                <td>Uppercase conversion</td>
+                <td><code>$UPCASE10.</code></td>
+                <td><code>TEXT      </code></td>
+            </tr>
+            <tr>
+                <td><code>$QUOTEw.</code></td>
+                <td>Adds quotes</td>
+                <td><code>$QUOTE12.</code></td>
+                <td><code>"Text"      </code></td>
+            </tr>
+            <tr>
+                <td><code>$VARYINGw.</code></td>
+                <td>Variable-length strings</td>
+                <td><code>$VARYING10.</code></td>
+                <td>Varies based on length</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="pagebreak"></div>
+    
+    <h2>Binary and Hexadecimal Formats</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>BINARYw.</code></td>
+                <td>Binary representation</td>
+                <td><code>BINARY8.</code></td>
+            </tr>
+            <tr>
+                <td><code>HEXw.</code></td>
+                <td>Hexadecimal representation</td>
+                <td><code>HEX8.</code></td>
+            </tr>
+            <tr>
+                <td><code>OCTALw.</code></td>
+                <td>Octal representation</td>
+                <td><code>OCTAL8.</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Social Security and Identification Formats</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th>Description</th>
+                <th>Example</th>
+                <th>Output</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>SSNw.</code></td>
+                <td>Social Security Number</td>
+                <td><code>SSN11.</code></td>
+                <td><code>123-45-6789</code></td>
+            </tr>
+            <tr>
+                <td><code>ZIPw.</code></td>
+                <td>ZIP code</td>
+                <td><code>ZIP5.</code></td>
+                <td><code>12345</code></td>
+            </tr>
+            <tr>
+                <td><code>ZIP4w.</code></td>
+                <td>ZIP+4 code</td>
+                <td><code>ZIP4.</code></td>
+                <td><code>12345-6789</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Additional Numeric Formats</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th>Description</th>
+                <th>Example</th>
+                <th>Output</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>COMMAXw.d</code></td>
+                <td>Commas and decimal point</td>
+                <td><code>COMMAX10.2</code></td>
+                <td><code>1.234,56</code></td>
+            </tr>
+            <tr>
+                <td><code>ROMANw.</code></td>
+                <td>Roman numerals</td>
+                <td><code>ROMAN8.</code></td>
+                <td><code>MCMXCVIII</code></td>
+            </tr>
+            <tr>
+                <td><code>WORDFw.</code></td>
+                <td>Numbers as words</td>
+                <td><code>WORDF20.</code></td>
+                <td><code>One hundred twenty-three</code></td>
+            </tr>
+            <tr>
+                <td><code>FRACTw.</code></td>
+                <td>Fractions</td>
+                <td><code>FRACT8.</code></td>
+                <td><code>123 1/2</code></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="notes">
+        <h3>Notes:</h3>
+        <ul>
+            <li><strong>w</strong>: Represents the total width of the formatted value</li>
+            <li><strong>d</strong>: Represents the number of decimal places (for numeric formats)</li>
+            <li><strong>f</strong>: Represents a specific variation of the format</li>
+        </ul>
+        <p>This chart is based on SAS documentation. For the most up-to-date and complete information, please refer to the official <a href="https://documentation.sas.com/doc/en/ds2pg/3.2/p0bz5detpfj01qn1kz2in7xymkdl.htm" target="_blank">SAS documentation</a>.</p>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px; color: #777; font-size: 0.9em;">
+        <p>SAS Data Formats Reference Chart - Created for print use</p>
+    </div>
+    
+</body>
+</html>
